@@ -94,3 +94,61 @@ data <- read_csv("study_dataset.csv") # Loading in study dataset as "data"
 I have viewed the data frame, and the data seems to have loaded correctly.
 
 # Data Cleaning
+
+To conduct the analysis, we will first need to calculate the `LingObf` variable by calculating the `abstraction` index and `jargon` words; creating standardized scores for `abstraction`, `cause`, `jargon`, `emo_pos`, and `flesch_re`; and calculating the `LingObf` composite variable from these standardized scores.
+
+1.  First, we will calculate the `abstraction` index by creating standardized scores for `article`, `prep`, and `quantity` and summing them.
+
+```{r}
+# Calculate standardized scores for article, prep, and quantity and add them to the dataset
+data$articles_standardized <- scale(data$article)
+data$prep_standardized <- scale(data$prep)
+data$quantity_standardized <- scale(data$quantity)
+
+# Create the new variable 'abstraction' as the sum of the three standardized variables
+data$abstraction <- (data$articles_standardized + data$prep_standardized + data$quantity_standardized)
+```
+
+-   After viewing the data, the transformations and variable calculation seem to have occurred appropriately.
+
+2.  Next, we will calculate the `jargon` words by subtracting `Dic` from 100.
+
+```{r}
+# Calculate the new variable 'jargon' by subtracting 'Dic' from 100
+data$jargon <- (100 - data$Dic)
+```
+
+-   After viewing the data, the variable calculation seem to have occurred appropriately.
+
+3.  Next, we will create standardized scores for each subcomponent of the `LingObf`.
+
+```{r}
+# Standardize the new set of variables and add them to the dataset
+data$abstraction_standardized <- scale(data$abstraction)
+data$cause_standardized <- scale(data$cause)
+data$jargon_standardized <- scale(data$jargon)
+data$emo_pos_standardized <- scale(data$emo_pos)
+data$flesch_re_standardized <- scale(data$flesch_re)
+```
+
+-   After viewing the data, the variable transformations seem to have occurred appropriately.
+
+4.  Finally, we will calculate the `LingObf` variable using the following formula: \[cause_standardized + abstraction_standardized + jargon_standardized\] – \[emo_pos_standardized + flesch_re_standardized\].
+
+```{r}
+# Calculate 'LingObf'
+data$LingObf <- (data$cause_standardized + data$abstraction_standardized + data$jargon_standardized) - (data$emo_pos_standardized + data$flesch_re_standardized)
+```
+
+-   After viewing the data, the variable calculation seem to have occurred appropriately.
+
+To ensure that our clean data is saved, we will write the dataset to the current working directory.
+
+```{r}
+# Writing our data as a csv file in the current working directory
+write.csv(data, "clean_study_data.csv")
+```
+
+-   I have opened the saved data file outside of Rstudio, and it seems to have been written correctly.
+
+# Data Exploration

@@ -35,7 +35,7 @@ In order to ensure that this analysis is computationally reproducible, I have in
 
 Although the following variables may not exist until after the data cleaning section, here is what each variable name refers to, so that you can refer to them while examining the code.
 
-`PaperID`: Unique identifier for each paper (i.e., the paper DOI).
+`DOI`: Unique identifier for each paper (i.e., the paper DOI).
 
 `PaperType`: Categorical variable indicating SAFP, SAGP, MAFP, or MAGP.
 
@@ -133,7 +133,7 @@ data$flesch_re_standardized <- scale(data$flesch_re)
 
 -   After viewing the data, the variable transformations seem to have occurred appropriately.
 
-4.  Finally, we will calculate the `LingObf` variable using the following formula: \[cause_standardized + abstraction_standardized + jargon_standardized\] – \[emo_pos_standardized + flesch_re_standardized\].
+4.  Now we will calculate the `LingObf` variable using the following formula: \[cause_standardized + abstraction_standardized + jargon_standardized\] – \[emo_pos_standardized + flesch_re_standardized\].
 
 ```{r}
 # Calculate 'LingObf'
@@ -141,6 +141,12 @@ data$LingObf <- (data$cause_standardized + data$abstraction_standardized + data$
 ```
 
 -   After viewing the data, the variable calculation seem to have occurred appropriately.
+
+5.  Lastly, our variable that indicates certainty sentiment is currently `certainty_avg`, but to make things easier I am going to copy this data into a new variables called `CertSent`.
+
+```{r}
+data$CertSent <- data$certainty_avg
+```
 
 To ensure that our clean data is saved, we will write the dataset to the current working directory.
 
@@ -152,3 +158,20 @@ write.csv(data, "clean_study_data.csv")
 -   I have opened the saved data file outside of Rstudio, and it seems to have been written correctly.
 
 # Data Exploration
+
+## Dealing with Missing Data
+
+1.  Data will be first inspected for missing scores.
+
+```{r}
+library(dplyr) # Loading the dplyr package for data manipulation and handling missing values
+
+# To summarize the number of missing values in each column
+missing_data_summary <- sapply(data, function(x) sum(is.na(x)))
+
+print(missing_data_summary) # To see summary of missing values for all columns
+```
+
+-   Taking a look at our outcome variables, there are no missing scores, so we do not need to impute any values.
+
+## Descriptive Statistics

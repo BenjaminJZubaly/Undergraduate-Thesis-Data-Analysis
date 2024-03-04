@@ -17,4 +17,80 @@ bibliography: references.yaml
 
 # Introduction
 
-This document is intended to track the data analysis for my undergraduate thesis project on the psychology of scientific fraud.
+This document is intended to track the data analysis for my undergraduate thesis project on the psychology of scientific fraud. I have already planned out (and preregistered) my data analysis plan (see [here](https://benjaminjzubaly.github.io/The-Psychology-of-Scientific-Fraud-Thesis/#data-analysis "Thesis Data Analysis Plan")), and I will note throughout the document if I deviate from this plan and why. This project is also being tracked in a private GitHub repository in case I need to revert back to a previous version of the project due to a fatal error.
+
+## Overview of Sections
+
+-   **Data Cleaning:** The data cleaning section will take the finalized dataset that I have included in the project directory and use it to create the remaining variables that we need for our analysis. We will also save this dataset.
+
+-   **Data Exploration:** In the data exploration section, we will check for and deal with missing data, run descriptive statistics of our outcome variables, visualize our data, and run bivariate correlations.
+
+-   **Testing Hypotheses:** In the hypothesis testing section, we will test each of our hypotheses one-by-one, according to our analysis plan.
+
+## Directory Set-Up
+
+In order to ensure that this analysis is computationally reproducible, I have included everything that is needed to complete this analysis (just the finalized data file, "study_dataset.csv") in the current working directory. The code will be displayed before the output of each analysis.
+
+## Variable Definitions
+
+Although the following variables may not exist until after the data cleaning section, here is what each variable name refers to, so that you can refer to them while examining the code.
+
+`PaperID`: Unique identifier for each paper (i.e., the paper DOI).
+
+`PaperType`: Categorical variable indicating SAFP, SAGP, MAFP, or MAGP.
+
+`LingObf`: Continuous variable for linguistic obfuscation.
+
+`CertSent`: Continuous variable for certainty sentiment.
+
+`Refs`: Count variable for references.
+
+`FraudCorrAuth`: Dichotomous variable indicating if the fraudulent author is the corresponding author (1) or is not (0). Unknown cases will be marked in a seperate variable with this variable left blank.
+
+`NumAuth`: Count variable indicating the number of authors for each paper.
+
+`abstraction`: Abstraction index composed of the sum of standardized scores for `article`, `prep`, and `quantity`.
+
+`article`: Articles from LIWC.
+
+`prep`: Prepositions from LIWC.
+
+`quantity`: Quantities from LIWC.
+
+`cause`: Causation terms from LIWC.
+
+`jargon`: The percent of words not captured by LIWC (100-`Dic`).
+
+`Dic`: The percentage of words captured by all LIWC dictionaries.
+
+`emo_pos`: Positive emotion terms from LIWC.
+
+`flesch_re`: Flesch Reading Ease from ARTE.
+
+## Initial Package Installations
+
+If you would like to reproduce this analysis, here are the package I will be using, so that they can be cued before starting.
+
+```{r}
+install.packages("readr")       # For reading data
+install.packages("dplyr")       # For data manipulation and handling of missing data
+install.packages("psych")       # For descriptive statistics, correlations
+install.packages("ggplot2")     # For data visualization
+install.packages("car")         # For diagnostic tests such as Levene's test
+install.packages("rcompanion")  # For Games-Howell post-hoc test (if applicable)
+install.packages("dunn.test")   # For Dunn post-hoc test (if applicable)
+```
+
+## Initial Import of Data
+
+We will not load in the dataset "study_dataset.csv" from the working directory.
+
+```{r}
+library(readr) # Loading the readr package
+
+data <- read_csv("study_dataset.csv") # Loading in study dataset as "data"
+```
+
+I have viewed the data frame, and the data seems to have loaded correctly.
+
+# Data Cleaning

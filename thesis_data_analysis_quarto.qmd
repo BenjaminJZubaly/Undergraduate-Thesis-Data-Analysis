@@ -15,6 +15,11 @@ csl: apa.csl
 bibliography: references.yaml
 ---
 
+```{r setup, include=FALSE}
+# Set CRAN mirror
+options(repos = list(CRAN = "https://cloud.r-project.org/"))
+```
+
 # Introduction
 
 This document is intended to track the data analysis for my undergraduate thesis project on the psychology of scientific fraud. I have already planned out (and preregistered) my data analysis plan (see [here](https://benjaminjzubaly.github.io/The-Psychology-of-Scientific-Fraud-Thesis/#data-analysis "Thesis Data Analysis Plan")), and I will note throughout the document if I deviate from this plan and why. This project is also being tracked in a private GitHub repository in case I need to revert back to a previous version of the project due to a fatal error.
@@ -75,7 +80,6 @@ If you would like to reproduce this analysis, here are the package I will be usi
 install.packages("readr")       # For reading data
 install.packages("dplyr")       # For data manipulation and handling of missing data
 install.packages("psych")       # For descriptive statistics, correlations
-install.packages("Hmisc")       # For descriptive statistics
 install.packages("ggplot2")     # For data visualization
 install.packages("car")         # For diagnostic tests such as Levene's test
 install.packages("rcompanion")  # For Games-Howell post-hoc test (if applicable)
@@ -177,7 +181,7 @@ print(missing_data_summary) # To see summary of missing values for all columns
 
 ## Descriptive Statistics
 
-1.  I will now generate descriptive statistics for each relevant variable in the dataset. I originally (in the preregistered plan) was simply going to deploy the `describe()` function on the entire dataset, but because I retained all of the columns from the Retraction Watch Database [@retracti2023] and all of the output from the text analysis packages [@aggarwal2022; @boyd2022; @rocklage2023] there are currently 219 variables. Because this would be unmanageable, I am going to only calculate descriptive statistics for variables of interest. I will first create a dataframe with only the continuous variables that I am interested in generating descriptive statistics for, and I will use the `psych` package to produce the descriptive stats.
+1.  I will now generate descriptive statistics for each relevant variable in the dataset. I originally (in the preregistered plan) was simply going to deploy the `describe()` function on the entire dataset, but because I retained all of the columns from the Retraction Watch Database [@retracti2023] and all of the output from the text analysis packages [@aggarwal2022; @boyd2022; @rocklage2023] there are currently 219 variables. Because this would be unmanageable, I am going to only calculate descriptive statistics for a selection of variables of interest. I will first create a dataframe with only the continuous variables that I am interested in generating descriptive statistics for, and I will use the `psych` package to produce the descriptive statistics for these variables.
 
 ```{r}
 library(psych) # Loading the psych package

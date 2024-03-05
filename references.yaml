@@ -1,0 +1,80 @@
+---
+references:
+- id: retracti2023
+  accessed: "05:25:22"
+  issued: 2023
+  key: LFVQRL2L
+  libraryID: 1
+  providerKey: 2509FBBE-5BB0-44C4-B119-6083A81ED673
+  title: Retraction Watch Database
+  type: webpage
+  URL: "http://retractiondatabase.org/RetractionSearch.aspx?"
+- id: rocklage2023
+  accessed: "05:06:10"
+  author:
+  - family: Rocklage
+    given: Matthew D.
+  - family: He
+    given: Sharlene
+  - family: Rucker
+    given: Derek D.
+  - family: Nordgren
+    given: Loran F.
+  container-title: Journal of Marketing Research
+  DOI: 10.1177/00222437221134802
+  ISSN: 0022-2437
+  issue: 5
+  issued: 2023-10-01
+  key: 2ATUT6XK
+  language: en
+  libraryID: 1
+  page: 870-888
+  providerKey: 2509FBBE-5BB0-44C4-B119-6083A81ED673
+  Publisher: SAGE
+  source: SAGE Journals
+  title: "Beyond Sentiment: The Value and Measurement of Consumer
+    Certainty in Language"
+  title-short: Beyond Sentiment
+  type: article-journal
+  URL: "https://doi.org/10.1177/00222437221134802"
+  volume: 60
+- id: boyd2022
+  accessed: "06:16:35"
+  author:
+  - family: Boyd
+    given: Ryan L.
+  - family: Ashokkumar
+    given: Ashwini
+  - family: Seraj
+    given: Sarah
+  - family: Pennebaker
+    given: James W.
+  container-title: "Austin, TX: University of Texas at Austin"
+  issued: 2022
+  key: LQWCC3P2
+  libraryID: 1
+  page: 1--47
+  providerKey: 2509FBBE-5BB0-44C4-B119-6083A81ED673
+  source: Google Scholar
+  title: The development and psychometric properties of LIWC-22
+  type: article-journal
+  URL: "https://www.researchgate.net/profile/Ryan-Boyd-8/publication/358725479_The_Development_and_Psychometric_Properties_of_LIWC-22/links/6210f62c4be28e145ca1e60b/The-Development-and-Psychometric-Properties-of-LIWC-22.pdf"
+- id: aggarwal2022
+  accessed: "03:12:27"
+  author:
+  - family: Aggarwal
+    given: Shivam Bansal
+    suffix: Chaitanya
+  genre: Python
+  issued: 2022-03-15
+  key: IUCBZ9A7
+  libraryID: 1
+  providerKey: 2509FBBE-5BB0-44C4-B119-6083A81ED673
+  rights: MIT
+  source: PyPI
+  title: "textstat: Calculate statistical features from text"
+  title-short: textstat
+  type: book
+  URL: "https://github.com/shivam5992/textstat"
+  versionNumber: 0.7.3
+...

@@ -75,6 +75,7 @@ If you would like to reproduce this analysis, here are the package I will be usi
 install.packages("readr")       # For reading data
 install.packages("dplyr")       # For data manipulation and handling of missing data
 install.packages("psych")       # For descriptive statistics, correlations
+install.packages("Hmisc")       # For descriptive statistics
 install.packages("ggplot2")     # For data visualization
 install.packages("car")         # For diagnostic tests such as Levene's test
 install.packages("rcompanion")  # For Games-Howell post-hoc test (if applicable)
@@ -175,3 +176,61 @@ print(missing_data_summary) # To see summary of missing values for all columns
 -   Taking a look at our outcome variables, there are no missing scores, so we do not need to impute any values.
 
 ## Descriptive Statistics
+
+1.  I will now generate descriptive statistics for each relevant variable in the dataset. I originally (in the preregistered plan) was simply going to deploy the `describe()` function on the entire dataset, but because I retained all of the columns from the Retraction Watch Database [@retracti2023] and all of the output from the text analysis packages [@aggarwal2022; @boyd2022; @rocklage2023] there are currently 219 variables. Because this would be unmanageable, I am going to only calculate descriptive statistics for variables of interest. I will first create a dataframe with only the continuous variables that I am interested in generating descriptive statistics for, and I will use the `psych` package to produce the descriptive stats.
+
+```{r}
+library(psych) # Loading the psych package
+
+# Selecting the continuous variables I am interested in getting descriptive statistics for (plus paper type for the next part)
+continuous_data_for_descriptives <- data[c("year", "Refs", "flesch_re", "WC", "abstraction", "jargon", "CertSent", "LingObf", "cause", "emo_pos", "article", "prep", "quantity", "PaperType")]
+
+# Generating descriptive statistics for variables of interest
+continuous_descriptive_stats_all <- describe(continuous_data_for_descriptives)
+
+# Displaying the results of the descriptive stats for the variables listed above
+continuous_descriptive_stats_all
+```
+
+-   Now we will create descriptive statistics for each of the continuous variables above within the `PaperType` groups.
+
+```{r}
+# Making PaperType a factor variable in the continuous variable dataframe to allow for grouping
+continuous_data_for_descriptives$PaperType <- factor(continuous_data_for_descriptives$PaperType, levels = c("SAFP", "MAFP", "SAGP", "MAGP"), labels = c("Single-Authored Fraudulent Papers", "Multi-Authored Fraudulent Papers", "Single-Authored Genuine Papers", "Multi-Authored Genuine Papers"))
+
+# Generating descriptive statistics within PaperType groups
+descriptive_stats_by_PaperType <- describeBy(continuous_data_for_descriptives, group = continuous_data_for_descriptives$PaperType)
+
+descriptive_stats_by_PaperType
+```
+
+2.  Frequency tables will now be produced for categorical variables, both for the data in general and within `PaperType` groups. A proportion table will be produced to more easily compare frequencies across `PaperType` groups.
+
+-   First, we will make the variables `inst_pres`, `gender`, `simple_reason`, `Country`, and `PaperType` factor variables.
+
+```{r}
+# Changing inst_pres (institutional prestige), gender, simple_reason, Country, and PaperType into factor variables
+data$inst_pres <- factor(data$inst_pres, levels = c(0, 1), labels = c("Not Major Research Institution", "Major Research Institution"))
+data$gender <- factor(data$gender, levels = c("FEMALE", "MALE"), labels = c("Female", "Male"))
+data$simple_reason <- factor(data$simple_reason, levels = c("f_data", "f_image", "m_image", "f_data f_image"), labels = c("Fabricated/Falsified Data", "Fabricated/Falsified Image", "Manipulated Image", "Fabricated/Falsified Data and Image"))
+data$Country <- factor(data$Country)
+data$PaperType <- factor(data$PaperType)
+```
+
+-   Next, we will produce frequency tables for each categorical variable of interest for the whole dataset.
+
+```{r}
+# Creating the frequency tables for each categorical variable
+freq_tab_inst_pres <- table(data$inst_pres)
+freq_tab_gender <- table(data$gender)
+freq_tab_simple_reason <- table(data$simple_reason)
+freq_tab_Country <- table(data$Country)
+freq_tab_PaperType <- table(data$PaperType)
+
+# Displaying the frequency tables
+freq_tab_inst_pres
+freq_tab_gender
+freq_tab_simple_reason
+freq_tab_Country
+freq_tab_PaperType
+```

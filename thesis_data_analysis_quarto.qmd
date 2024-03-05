@@ -196,6 +196,10 @@ continuous_descriptive_stats_all <- describe(continuous_data_for_descriptives)
 continuous_descriptive_stats_all
 ```
 
+-   I won't make too many comments here, because for most of these measures there are not really formal or informal norms against which to judge them. That being said:
+    -   **Year:** The mean year is mid-2009, with a standard deviation of 10 years (max 2022 and min 1980), indicating that the sample is recent enough to be relevant but also spans quite a number of years. This I think is good insofar as the recent history of academic publishing is represented more fully (some recent investigations limited their search to the three years prior to publication). There is some negative skew, which I suspect is due to the 1980 paper being quite a bit older than most papers.
+    -   **Refs:** The mean number of references is 45.82 with a standard deviation of 23.47. At least intuitively, this seems like a pretty standard distribution of references if we were to randomly select papers from the literature. However, the range is huge, with one paper showing 146 references—perhaps why the skew is positive. This may be something to consider when making group comparisons, as this point may have significant leverage.
+    -   
 -   Now we will create descriptive statistics for each of the continuous variables above within the `PaperType` groups.
 
 ```{r}

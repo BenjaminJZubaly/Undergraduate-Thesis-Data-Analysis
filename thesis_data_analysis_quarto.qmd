@@ -386,4 +386,47 @@ num_auth_descriptives
 
 ## Data Visualization
 
-1.  
+1.  Using the `ggplot2` package, frequency distributions and box plots will be generated for `LingObf`, `CertSent`, and `Refs`. A bar plot will be produced for `FraudCorrAuth`.
+
+```{r}
+library(ggplot2) # To load the ggplot2 package
+
+# To produce histogram and box plot for LingObf
+ggplot(data, aes(x = LingObf)) + 
+  geom_histogram(fill = "blue", color = "black") +
+  labs(title = "Histogram of Linguistic Obfuscation for Entire Dataset")
+ggplot(data, aes(y = LingObf)) + 
+  geom_boxplot(fill = "lightblue", color = "black") +
+  labs(title = "Box Plot of Linguistic Obfuscation for Entire Dataset")
+
+# To produce histogram and box plot for CertSent
+ggplot(data, aes(x = CertSent)) + 
+  geom_histogram(fill = "blue", color = "black") +
+  labs(title = "Histogram of Certainty Sentiment for Entire Dataset")
+ggplot(data, aes(y = CertSent)) + 
+  geom_boxplot(fill = "lightblue", color = "black") +
+  labs(title = "Box Plot of Certainty Sentiment for Entire Dataset")
+
+# To produce histogram and box plot for Refs
+ggplot(data, aes(x = Refs)) + 
+  geom_histogram(fill = "blue", color = "black") +
+  labs(title = "Histogram of References for Entire Dataset")
+ggplot(data, aes(y = Refs)) + 
+  geom_boxplot(fill = "lightblue", color = "black") +
+  labs(title = "Box Plot of References for Entire Dataset")
+
+# To produce bar plot for FraudCorrAuth
+ggplot(data, aes(x = FraudCorrAuth)) + 
+  geom_bar(fill = "coral") +
+  labs(title = "Bar Plot of Fraudulent Corresponding Author for MAFP")
+```
+
+-   **LingObf:** Linguistic obfuscation seems to have a bit of a wonky distribution with a few outliers at the low end of the distribution (M = 0, SD = 1.67; from descriptives above). This can be observed in the box plot as well, which shows one of the particularly low values.
+
+-   **CertSent:** Certainty sentiment does not seem to be skewed despite having an outlier at the low end of the distribution as well. The box plot highlights three values at the low end of the scale as being outliers.
+
+-   **Refs:** References has a strange distribution, one that looks like it is actually composed of two latent classes. It also has two outlier values way at the high end of the distribution, as shown by the histogram and the box plot.
+
+-   **FraudCorrAuth:** The fraudulent corresponding author variable shows an even split between papers for which the fraudulent author was and was not the corresponding author.
+
+2.  

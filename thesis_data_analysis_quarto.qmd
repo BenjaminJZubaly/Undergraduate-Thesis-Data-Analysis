@@ -265,10 +265,12 @@ freq_tab_PaperType
 
     -   First, we need to make the matching dummy variables into factor variables with labels to make them more interpretable.
 
-        ```{r}
-        # Creating factor variables out of the dummy variables that track matching across groups
-        data$different_country <- factor(data$different_country, levels = c(0, 1), labels = c("Same Country", "Different Country"))
-        data$different_gender <- factor(data$different_gender, levels = c(0, 1), labels = c("Same Gender", "Different Gender"))
-        data$different_inst_pres <- factor(data$different_inst_pres, levels = c(0, 1), labels = c("Same Institutional Prestige", "Different Institutional Prestige"))
-        data$different_journal <- factor(data$different_journal, levels = c(0, 1), labels = c("Same Journal", "Different Journal"))
-        ```
+```{r}
+# Creating factor variables out of the dummy variables that track matching across groups
+data$different_country <- factor(data$different_country, levels = c(0, 1), labels = c("Same Country", "Different Country"))
+data$different_gender <- factor(data$different_gender, levels = c(0, 1), labels = c("Same Gender", "Different Gender"))
+data$different_inst_pres <- factor(data$different_inst_pres, levels = c(0, 1), labels = c("Same Institutional Prestige", "Different Institutional Prestige"))
+data$different_journal <- factor(data$different_journal, levels = c(0, 1), labels = c("Same Journal", "Different Journal"))
+```
+
+-   I have checked the datset, and the labels seem to have been assigned correctly.

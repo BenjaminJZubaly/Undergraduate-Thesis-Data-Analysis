@@ -22,7 +22,7 @@ options(repos = list(CRAN = "https://cloud.r-project.org/"))
 
 # Introduction
 
-This document is intended to track the data analysis for my undergraduate thesis project on the psychology of scientific fraud. I have already planned out (and preregistered) my data analysis plan (see [here](https://benjaminjzubaly.github.io/The-Psychology-of-Scientific-Fraud-Thesis/#data-analysis "Thesis Data Analysis Plan")), and I will note throughout the document if I deviate from this plan and why. This project is also being tracked in a private GitHub repository in case I need to revert back to a previous version of the project due to a fatal error.
+This document is intended to track the data analysis for my undergraduate thesis project on the psychology of scientific fraud. I have already planned out (and [preregistered](https://osf.io/vmq48/?view_only=5d55e73ffc7948748e5a7049c6e52161 "OSF Preregistration Link")) my data analysis plan (see [here](https://benjaminjzubaly.github.io/The-Psychology-of-Scientific-Fraud-Thesis/#data-analysis "Thesis Data Analysis Plan")), and I will note throughout the document if I deviate from this plan and why. This project is also being tracked in a private GitHub repository in case I need to revert back to a previous version of the project due to a fatal error.
 
 ## Overview of Sections
 
@@ -272,7 +272,7 @@ data$different_journal <- factor(data$different_journal, levels = c(0, 1), label
 ```
 
 -   I have checked the data set, and the labels seem to have been assigned correctly. Now we will produce the frequency tables and proportion tables.
-    -   Because we are taking a look at matching characteristics here, I will also take a look at the `year_difference` (the difference between the years of publication for the matched papers) variable within each group by using the `describe()` function from the `psych` package (like for the continuous variables above).
+    -   Because we are taking a look at matching characteristics here, I will also take a look at the `year_difference` (the difference between the years of publication for the matched papers) variable within each group by using the `describe()` function from the `psych` package (like for the continuous variables above). In addition, I will take a look at the `NumAuth` (number of authors) for each of the groups.
 
 ```{r}
 # Frequency tables and proportion tables
@@ -320,6 +320,70 @@ proportion_table_by_PaperType_different_journal <- prop.table(frequency_table_by
 proportion_table_by_PaperType_different_journal
 
 # Descriptive statistics for year off within PaperType groups
-year_difference_descriptives <- describeBy(data$year_difference, group = data$PaperType)
+year_difference_descriptives <- describeBy(data$year_difference, group = data$PaperType, na.rm = TRUE)
 year_difference_descriptives
+num_auth_descriptives <- describeBy(data$NumAuth, group = data$PaperType, na.rm = TRUE)
+num_auth_descriptives
 ```
+
+-   **Overview of Categorical Variables:**
+
+    -   **Institutional Prestige:** The split for frequencies/proportion of is very close to even across groups. The MAFP and SAGP groups have 17 papers from major research institutions and 5 from lower status research institutions (.77/.22), and the MAGP and SAFP groups have 18 papers from major research institutions and 4 from lower status research institutions (.82/.18).
+
+    -   **Gender:** The split between groups is also very similar for gender, with MAFP, MAGP, and SAGP groups each having 4 female first authors and 18 male first authors (.18/.82). SAFP had 3 female first authors and 19 male first authors (.14/.86).
+
+    -   **Reason (Not Matched Between Groups During Data Collection):** The reason for retraction is only relevant for the fraudulent paper groups, and there is a similar split between them. The SAFP had 15 papers in the group for Fabricated/Falsified Data, 2 paper for Fabricated/Falsified Images, 5 for Manipulated Images, and 0 that Fabricated/Falsified Data and Images (.68/.09/.22/.00). The MAFP had 12 papers in the group for Fabricated/Falsified Data, 1 paper for Fabricated/Falsified Images, 7 for Manipulated Images, and 2 for Fabricated/Falsified Data and Images (.55/.05/.32/.09).
+
+    -   **Country:** Because there are many countries, I will not delineate them all here but rather refer you to the data printed above if you are interested in diving deeper. To highlight one thing, we can see that papers from the United States (our most common country in the whole data set) tend to be overrepresented in the frequencies for each group (MAFP, 8/.36; MAGP, 9/.40; SAFP, 7/.32; SAGP, 5/.23). There are no other countries with proportions that exceed the lowest proportion of United States papers in any group (all\<.23).
+
+-   **Overview of Matching Characteristic Dummy Variables and Average Differences:**
+
+    -   Although the frequencies and proportions of the matched variables within groups above indicates to some degree how similar each group is, the more important metric of how closely matched the groups are is between the groups for which comparisons are to be made. For this reason, I dummy coded whether each paper matched it's pair on each characteristic or not as a binary variable (which we labeled above) before loading the data. Because the SAFP papers were not gathered by matching to any group, there are no data for the SAFP group for any of the dummy variables, and journal only didn't match across some of the SAFP and MAFP pairs. Each of the other groups is in reference to the group against which it will be compared (i.e., data for MAFP represent how well they match SAFP papers, data for MAGP represent how well they match with MAFP, data for SAGP represent how well they match with SAFP). In addition, I coded how different the year was between papers, such that positive values indicate the number of years the original paper was published after the matched paper (negative values indicate the matched paper was published after the paper it was being matched to).
+
+    -   **MAFP compared with SAFP:**
+
+        -   Country was the same for 14 (.64) pairs and different for 8 (.36) pairs.
+
+        -   Gender was the same for 18 (.82) pairs and different for 4 (.18) pairs.
+
+        -   Institutional prestige was the same for 17 (.77) pairs and different for 5 (.23) pairs.
+
+        -   Journal was the same for 11 (.50) pairs and different for 11 (.50) pairs.
+
+        -   The average year difference was -1.36, indicating that the MAFP tended to be slightly more recent than the SAFP.
+
+        -   Finally, the mean number of authors for MAFP is 3.73.
+
+    -   **MAGP compared with MAFP:**
+
+        -   Country was the same for 21 (.95) pairs and different for 1 (.05) pairs.
+
+        -   Gender was the same for 20 (.91) pairs and different for 2 (.09) pairs.
+
+        -   Institutional prestige was the same for 21 pairs (.95) and different for 1 (.05) pair.
+
+        -   Journal was the same for every paper.
+
+        -   The average year difference was -.64, indicating that the MAGP tended to be slightly more recent than the MAFP.
+
+        -   Finally, the mean number of authors for MAFP is 4.05.
+
+    -   **SAGP compared with SAFP:**
+
+        -   Country was the same for 10 (.45) pairs and different for 12 (.55) pairs.
+
+        -   Gender was the same for 19 (.86) pairs and different for 3 (.14) pairs.
+
+        -   Institutional prestige was the same for 21 pairs (.95) and different for 1 (.05) pair.
+
+        -   Journal was the same for every paper.
+
+        -   The average year difference was 0, indicating that the SAGP and SAFP are exactly matched for the average year of publication.
+
+-   **Summary of matching characteristics:**
+
+    -   Looking at the data, the most difficult characteristic to match was country across all categories of papers, except for MAFP compared with SAFP, where journal was the most difficult to match. Nevertheless, for many of the situations where we were unable to match the specific paper, this was balanced out by not being able to match another paper in the opposite direction, as the frequencies within paper types demonstrates.
+
+## Data Visualization
+
+1.  

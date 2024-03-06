@@ -3057,6 +3057,7 @@ vertical-align: -.125em;
   <ul class="collapse">
   <li><a href="#dealing-with-missing-data" id="toc-dealing-with-missing-data" class="nav-link" data-scroll-target="#dealing-with-missing-data">Dealing with Missing Data</a></li>
   <li><a href="#descriptive-statistics" id="toc-descriptive-statistics" class="nav-link" data-scroll-target="#descriptive-statistics">Descriptive Statistics</a></li>
+  <li><a href="#data-visualization" id="toc-data-visualization" class="nav-link" data-scroll-target="#data-visualization">Data Visualization</a></li>
   </ul></li>
   </ul>
 <div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="thesis_data_analysis_quarto.docx"><i class="bi bi-file-word"></i>MS Word</a></li><li><a href="thesis_data_analysis_quarto.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
@@ -3094,7 +3095,7 @@ vertical-align: -.125em;
 
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
-<p>This document is intended to track the data analysis for my undergraduate thesis project on the psychology of scientific fraud. I have already planned out (and preregistered) my data analysis plan (see <a href="https://benjaminjzubaly.github.io/The-Psychology-of-Scientific-Fraud-Thesis/#data-analysis" title="Thesis Data Analysis Plan">here</a>), and I will note throughout the document if I deviate from this plan and why. This project is also being tracked in a private GitHub repository in case I need to revert back to a previous version of the project due to a fatal error.</p>
+<p>This document is intended to track the data analysis for my undergraduate thesis project on the psychology of scientific fraud. I have already planned out (and <a href="https://osf.io/vmq48/?view_only=5d55e73ffc7948748e5a7049c6e52161" title="OSF Preregistration Link">preregistered</a>) my data analysis plan (see <a href="https://benjaminjzubaly.github.io/The-Psychology-of-Scientific-Fraud-Thesis/#data-analysis" title="Thesis Data Analysis Plan">here</a>), and I will note throughout the document if I deviate from this plan and why. This project is also being tracked in a private GitHub repository in case I need to revert back to a previous version of the project due to a fatal error.</p>
 <section id="overview-of-sections" class="level2">
 <h2 class="anchored" data-anchor-id="overview-of-sections">Overview of Sections</h2>
 <ul>
@@ -3139,7 +3140,7 @@ vertical-align: -.125em;
 <div class="cell-output cell-output-stdout">
 <pre><code>
 The downloaded binary packages are in
-    /var/folders/38/1ybnplc53zdb089bn6drqfn00000gn/T//RtmpuHaEW0/downloaded_packages</code></pre>
+    /var/folders/38/1ybnplc53zdb089bn6drqfn00000gn/T//RtmpqU4zq2/downloaded_packages</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;dplyr&quot;</span>)       <span class="co"># For data manipulation and handling of missing data</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
@@ -3149,7 +3150,7 @@ The downloaded binary packages are in
 <div class="cell-output cell-output-stdout">
 <pre><code>
 The downloaded binary packages are in
-    /var/folders/38/1ybnplc53zdb089bn6drqfn00000gn/T//RtmpuHaEW0/downloaded_packages</code></pre>
+    /var/folders/38/1ybnplc53zdb089bn6drqfn00000gn/T//RtmpqU4zq2/downloaded_packages</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;psych&quot;</span>)       <span class="co"># For descriptive statistics, correlations</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
@@ -3159,7 +3160,7 @@ The downloaded binary packages are in
 <div class="cell-output cell-output-stdout">
 <pre><code>
 The downloaded binary packages are in
-    /var/folders/38/1ybnplc53zdb089bn6drqfn00000gn/T//RtmpuHaEW0/downloaded_packages</code></pre>
+    /var/folders/38/1ybnplc53zdb089bn6drqfn00000gn/T//RtmpqU4zq2/downloaded_packages</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;ggplot2&quot;</span>)     <span class="co"># For data visualization</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
@@ -3169,7 +3170,7 @@ The downloaded binary packages are in
 <div class="cell-output cell-output-stdout">
 <pre><code>
 The downloaded binary packages are in
-    /var/folders/38/1ybnplc53zdb089bn6drqfn00000gn/T//RtmpuHaEW0/downloaded_packages</code></pre>
+    /var/folders/38/1ybnplc53zdb089bn6drqfn00000gn/T//RtmpqU4zq2/downloaded_packages</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;car&quot;</span>)         <span class="co"># For diagnostic tests such as Levene&#39;s test</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
@@ -3179,7 +3180,7 @@ The downloaded binary packages are in
 <div class="cell-output cell-output-stdout">
 <pre><code>
 The downloaded binary packages are in
-    /var/folders/38/1ybnplc53zdb089bn6drqfn00000gn/T//RtmpuHaEW0/downloaded_packages</code></pre>
+    /var/folders/38/1ybnplc53zdb089bn6drqfn00000gn/T//RtmpqU4zq2/downloaded_packages</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;rcompanion&quot;</span>)  <span class="co"># For Games-Howell post-hoc test (if applicable)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
@@ -3189,7 +3190,7 @@ The downloaded binary packages are in
 <div class="cell-output cell-output-stdout">
 <pre><code>
 The downloaded binary packages are in
-    /var/folders/38/1ybnplc53zdb089bn6drqfn00000gn/T//RtmpuHaEW0/downloaded_packages</code></pre>
+    /var/folders/38/1ybnplc53zdb089bn6drqfn00000gn/T//RtmpqU4zq2/downloaded_packages</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;dunn.test&quot;</span>)   <span class="co"># For Dunn post-hoc test (if applicable)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
@@ -3199,7 +3200,7 @@ The downloaded binary packages are in
 <div class="cell-output cell-output-stdout">
 <pre><code>
 The downloaded binary packages are in
-    /var/folders/38/1ybnplc53zdb089bn6drqfn00000gn/T//RtmpuHaEW0/downloaded_packages</code></pre>
+    /var/folders/38/1ybnplc53zdb089bn6drqfn00000gn/T//RtmpqU4zq2/downloaded_packages</code></pre>
 </div>
 </div>
 </section>
@@ -3838,7 +3839,7 @@ MAFP MAGP SAFP SAGP
 <ul>
 <li>I have checked the data set, and the labels seem to have been assigned correctly. Now we will produce the frequency tables and proportion tables.
 <ul>
-<li>Because we are taking a look at matching characteristics here, I will also take a look at the <code>year_difference</code> (the difference between the years of publication for the matched papers) variable within each group by using the <code>describe()</code> function from the <code>psych</code> package (like for the continuous variables above).</li>
+<li>Because we are taking a look at matching characteristics here, I will also take a look at the <code>year_difference</code> (the difference between the years of publication for the matched papers) variable within each group by using the <code>describe()</code> function from the <code>psych</code> package (like for the continuous variables above). In addition, I will take a look at the <code>NumAuth</code> (number of authors) for each of the groups.</li>
 </ul></li>
 </ul>
 <div class="cell">
@@ -4055,7 +4056,7 @@ MAFP MAGP SAFP SAGP
   SAGP                               </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Descriptive statistics for year off within PaperType groups</span></span>
-<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a>year_difference_descriptives <span class="ot">&lt;-</span> <span class="fu">describeBy</span>(data<span class="sc">$</span>year_difference, <span class="at">group =</span> data<span class="sc">$</span>PaperType)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a>year_difference_descriptives <span class="ot">&lt;-</span> <span class="fu">describeBy</span>(data<span class="sc">$</span>year_difference, <span class="at">group =</span> data<span class="sc">$</span>PaperType, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in min(x, na.rm = na.rm): no non-missing arguments to min; returning
 Inf</code></pre>
@@ -4084,7 +4085,77 @@ group: SAGP
    vars  n mean   sd median trimmed mad min max range skew kurtosis   se
 X1    1 22    0 1.35      0   -0.06   0  -4   4     8 0.11     4.36 0.29</code></pre>
 </div>
+<div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a>num_auth_descriptives <span class="ot">&lt;-</span> <span class="fu">describeBy</span>(data<span class="sc">$</span>NumAuth, <span class="at">group =</span> data<span class="sc">$</span>PaperType, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb89-2"><a href="#cb89-2" aria-hidden="true" tabindex="-1"></a>num_auth_descriptives</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ Descriptive statistics by group 
+group: MAFP
+   vars  n mean   sd median trimmed  mad min max range skew kurtosis   se
+X1    1 22 3.73 1.32      4    3.61 1.48   2   7     5  0.6    -0.17 0.28
+------------------------------------------------------------ 
+group: MAGP
+   vars  n mean   sd median trimmed  mad min max range skew kurtosis   se
+X1    1 22 4.05 1.91      4    3.78 1.48   2   9     7 0.99     0.29 0.41
+------------------------------------------------------------ 
+group: SAFP
+   vars  n mean sd median trimmed mad min max range skew kurtosis se
+X1    1 22    1  0      1       1   0   1   1     0  NaN      NaN  0
+------------------------------------------------------------ 
+group: SAGP
+   vars  n mean sd median trimmed mad min max range skew kurtosis se
+X1    1 22    1  0      1       1   0   1   1     0  NaN      NaN  0</code></pre>
 </div>
+</div>
+<ul>
+<li><p><strong>Overview of Categorical Variables:</strong></p>
+<ul>
+<li><p><strong>Institutional Prestige:</strong> The split for frequencies/proportion of is very close to even across groups. The MAFP and SAGP groups have 17 papers from major research institutions and 5 from lower status research institutions (.77/.22), and the MAGP and SAFP groups have 18 papers from major research institutions and 4 from lower status research institutions (.82/.18).</p></li>
+<li><p><strong>Gender:</strong> The split between groups is also very similar for gender, with MAFP, MAGP, and SAGP groups each having 4 female first authors and 18 male first authors (.18/.82). SAFP had 3 female first authors and 19 male first authors (.14/.86).</p></li>
+<li><p><strong>Reason (Not Matched Between Groups During Data Collection):</strong> The reason for retraction is only relevant for the fraudulent paper groups, and there is a similar split between them. The SAFP had 15 papers in the group for Fabricated/Falsified Data, 2 paper for Fabricated/Falsified Images, 5 for Manipulated Images, and 0 that Fabricated/Falsified Data and Images (.68/.09/.22/.00). The MAFP had 12 papers in the group for Fabricated/Falsified Data, 1 paper for Fabricated/Falsified Images, 7 for Manipulated Images, and 2 for Fabricated/Falsified Data and Images (.55/.05/.32/.09).</p></li>
+<li><p><strong>Country:</strong> Because there are many countries, I will not delineate them all here but rather refer you to the data printed above if you are interested in diving deeper. To highlight one thing, we can see that papers from the United States (our most common country in the whole data set) tend to be overrepresented in the frequencies for each group (MAFP, 8/.36; MAGP, 9/.40; SAFP, 7/.32; SAGP, 5/.23). There are no other countries with proportions that exceed the lowest proportion of United States papers in any group (all&lt;.23).</p></li>
+</ul></li>
+<li><p><strong>Overview of Matching Characteristic Dummy Variables and Average Differences:</strong></p>
+<ul>
+<li><p>Although the frequencies and proportions of the matched variables within groups above indicates to some degree how similar each group is, the more important metric of how closely matched the groups are is between the groups for which comparisons are to be made. For this reason, I dummy coded whether each paper matched it’s pair on each characteristic or not as a binary variable (which we labeled above) before loading the data. Because the SAFP papers were not gathered by matching to any group, there are no data for the SAFP group for any of the dummy variables, and journal only didn’t match across some of the SAFP and MAFP pairs. Each of the other groups is in reference to the group against which it will be compared (i.e., data for MAFP represent how well they match SAFP papers, data for MAGP represent how well they match with MAFP, data for SAGP represent how well they match with SAFP). In addition, I coded how different the year was between papers, such that positive values indicate the number of years the original paper was published after the matched paper (negative values indicate the matched paper was published after the paper it was being matched to).</p></li>
+<li><p><strong>MAFP compared with SAFP:</strong></p>
+<ul>
+<li><p>Country was the same for 14 (.64) pairs and different for 8 (.36) pairs.</p></li>
+<li><p>Gender was the same for 18 (.82) pairs and different for 4 (.18) pairs.</p></li>
+<li><p>Institutional prestige was the same for 17 (.77) pairs and different for 5 (.23) pairs.</p></li>
+<li><p>Journal was the same for 11 (.50) pairs and different for 11 (.50) pairs.</p></li>
+<li><p>The average year difference was -1.36, indicating that the MAFP tended to be slightly more recent than the SAFP.</p></li>
+<li><p>Finally, the mean number of authors for MAFP is 3.73.</p></li>
+</ul></li>
+<li><p><strong>MAGP compared with MAFP:</strong></p>
+<ul>
+<li><p>Country was the same for 21 (.95) pairs and different for 1 (.05) pairs.</p></li>
+<li><p>Gender was the same for 20 (.91) pairs and different for 2 (.09) pairs.</p></li>
+<li><p>Institutional prestige was the same for 21 pairs (.95) and different for 1 (.05) pair.</p></li>
+<li><p>Journal was the same for every paper.</p></li>
+<li><p>The average year difference was -.64, indicating that the MAGP tended to be slightly more recent than the MAFP.</p></li>
+<li><p>Finally, the mean number of authors for MAFP is 4.05.</p></li>
+</ul></li>
+<li><p><strong>SAGP compared with SAFP:</strong></p>
+<ul>
+<li><p>Country was the same for 10 (.45) pairs and different for 12 (.55) pairs.</p></li>
+<li><p>Gender was the same for 19 (.86) pairs and different for 3 (.14) pairs.</p></li>
+<li><p>Institutional prestige was the same for 21 pairs (.95) and different for 1 (.05) pair.</p></li>
+<li><p>Journal was the same for every paper.</p></li>
+<li><p>The average year difference was 0, indicating that the SAGP and SAFP are exactly matched for the average year of publication.</p></li>
+</ul></li>
+</ul></li>
+<li><p><strong>Summary of matching characteristics:</strong></p>
+<ul>
+<li>Looking at the data, the most difficult characteristic to match was country across all categories of papers, except for MAFP compared with SAFP, where journal was the most difficult to match. Nevertheless, for many of the situations where we were unable to match the specific paper, this was balanced out by not being able to match another paper in the opposite direction, as the frequencies within paper types demonstrates.</li>
+</ul></li>
+</ul>
+</section>
+<section id="data-visualization" class="level2">
+<h2 class="anchored" data-anchor-id="data-visualization">Data Visualization</h2>
+<ol type="1">
+<li></li>
+</ol>
 
 </section>
 </section>

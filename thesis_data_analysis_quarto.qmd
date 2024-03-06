@@ -261,9 +261,7 @@ freq_tab_PaperType
 
     -   Finally, we can see that the papers are evenly split between each of our groups (*n* = 22; *N* = 88).
 
--   Next, we will produce the frequencies within `PaperType` groups. Because we were not able to perfectly match across our matching characteristics, we will take this opportunity to look at how far off we were. A proportion table will be produced to more easily compare frequencies across `PaperType` groups.
-
-    -   First, we need to make the matching dummy variables into factor variables with labels to make them more interpretable.
+-   Next, we will produce the frequencies within `PaperType` groups. Because we were not able to perfectly match across our matching characteristics, we will take this opportunity to look at how far off we were. A proportion table will be produced to more easily compare frequencies across `PaperType` groups. First, however, we need to make the matching dummy variables into factor variables with labels to make them more interpretable.
 
 ```{r}
 # Creating factor variables out of the dummy variables that track matching across groups
@@ -273,4 +271,55 @@ data$different_inst_pres <- factor(data$different_inst_pres, levels = c(0, 1), l
 data$different_journal <- factor(data$different_journal, levels = c(0, 1), labels = c("Same Journal", "Different Journal"))
 ```
 
--   I have checked the dataset, and the labels seem to have been assigned correctly.
+-   I have checked the data set, and the labels seem to have been assigned correctly. Now we will produce the frequency tables and proportion tables.
+    -   Because we are taking a look at matching characteristics here, I will also take a look at the `year_difference` (the difference between the years of publication for the matched papers) variable within each group by using the `describe()` function from the `psych` package (like for the continuous variables above).
+
+```{r}
+# Frequency tables and proportion tables
+  # institutional prestige
+frequency_table_by_PaperType_inst_pres <- table(data$PaperType, data$inst_pres)
+frequency_table_by_PaperType_inst_pres
+proportion_table_by_PaperType_inst_pres <- prop.table(frequency_table_by_PaperType_inst_pres, margin = 1)
+proportion_table_by_PaperType_inst_pres
+  # gender
+frequency_table_by_PaperType_gender <- table(data$PaperType, data$gender)
+frequency_table_by_PaperType_gender
+proportion_table_by_PaperType_gender <- prop.table(frequency_table_by_PaperType_gender, margin = 1)
+proportion_table_by_PaperType_gender
+  # reason
+frequency_table_by_PaperType_reason <- table(data$PaperType, data$simple_reason)
+frequency_table_by_PaperType_reason
+proportion_table_by_PaperType_reason <- prop.table(frequency_table_by_PaperType_reason, margin = 1)
+proportion_table_by_PaperType_reason
+  # country
+frequency_table_by_PaperType_country <- table(data$PaperType, data$Country)
+frequency_table_by_PaperType_country
+proportion_table_by_PaperType_country <- prop.table(frequency_table_by_PaperType_country, margin = 1)
+proportion_table_by_PaperType_country
+
+# And for the matching characteristic dummy variables
+  # Country different
+frequency_table_by_PaperType_different_country <- table(data$PaperType, data$different_country)
+frequency_table_by_PaperType_different_country
+proportion_table_by_PaperType_different_country <- prop.table(frequency_table_by_PaperType_different_country, margin = 1)
+proportion_table_by_PaperType_different_country
+  # Gender different
+frequency_table_by_PaperType_different_gender <- table(data$PaperType, data$different_gender)
+frequency_table_by_PaperType_different_gender
+proportion_table_by_PaperType_different_gender <- prop.table(frequency_table_by_PaperType_different_gender, margin = 1)
+proportion_table_by_PaperType_different_gender
+  # Institutional prestige different
+frequency_table_by_PaperType_different_inst_pres <- table(data$PaperType, data$different_inst_pres)
+frequency_table_by_PaperType_different_inst_pres
+proportion_table_by_PaperType_different_inst_pres <- prop.table(frequency_table_by_PaperType_different_inst_pres, margin = 1)
+proportion_table_by_PaperType_different_inst_pres
+  # Journal different
+frequency_table_by_PaperType_different_journal <- table(data$PaperType, data$different_journal)
+frequency_table_by_PaperType_different_journal
+proportion_table_by_PaperType_different_journal <- prop.table(frequency_table_by_PaperType_different_journal, margin = 1)
+proportion_table_by_PaperType_different_journal
+
+# Descriptive statistics for year off within PaperType groups
+year_difference_descriptives <- describeBy(data$year_difference, group = data$PaperType)
+year_difference_descriptives
+```

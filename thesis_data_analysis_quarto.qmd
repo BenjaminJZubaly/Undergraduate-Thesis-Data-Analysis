@@ -273,4 +273,4 @@ data$different_inst_pres <- factor(data$different_inst_pres, levels = c(0, 1), l
 data$different_journal <- factor(data$different_journal, levels = c(0, 1), labels = c("Same Journal", "Different Journal"))
 ```
 
--   I have checked the datset, and the labels seem to have been assigned correctly.
+-   I have checked the dataset, and the labels seem to have been assigned correctly.

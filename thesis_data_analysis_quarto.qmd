@@ -196,10 +196,10 @@ continuous_descriptive_stats_all <- describe(continuous_data_for_descriptives)
 continuous_descriptive_stats_all
 ```
 
--   I won't make too many comments here, because for most of these measures there are not really formal or informal norms against which to judge them. That being said:
+-   I won't make too many comments here, because for most of these measures there are no formal or informal norms against which to judge them. That being said:
     -   **Year:** The mean year is mid-2009, with a standard deviation of 10 years (max 2022 and min 1980), indicating that the sample is recent enough to be relevant but also spans quite a number of years. This I think is good insofar as the recent history of academic publishing is represented more fully (some recent investigations limited their search to the three years prior to publication). There is some negative skew, which I suspect is due to the 1980 paper being quite a bit older than most papers.
     -   **Refs:** The mean number of references is 45.82 with a standard deviation of 23.47. At least intuitively, this seems like a pretty standard distribution of references if we were to randomly select papers from the literature. However, the range is huge, with one paper showing 146 references—perhaps why the skew is positive. This may be something to consider when making group comparisons, as this point may have significant leverage.
-    -   
+    -   **WC:** The average word count is 4436.25, and the standard deviation is 2248.24. It is also positively skewed, and although this should not affect our linguistic dependent variables it may be a confounding factor for references. Indeed, taking a look at the dataset I can see that the second highest value for word count (9670) also has the maximum value for references (the outlier noted above at 146 references). This will be something to watch out for.
 -   Now we will create descriptive statistics for each of the continuous variables above within the `PaperType` groups.
 
 ```{r}
@@ -212,7 +212,15 @@ descriptive_stats_by_PaperType <- describeBy(continuous_data_for_descriptives, g
 descriptive_stats_by_PaperType
 ```
 
-2.  Frequency tables will now be produced for categorical variables, both for the data in general and within `PaperType` groups. A proportion table will be produced to more easily compare frequencies across `PaperType` groups.
+-   Some quick notes:
+
+    -   **Year:** The year seems to be relatively similar between groups, with the single-author groups (SAGP and SAFP) both having mid-2008 as the mean and the multi-author groups both having mid-2010 as the mean. This may be partially due to there being single outliers (matched papers that are both outliers) at the lower end of the distribution.
+
+    -   **Refs:** As I suspected, the outlier of 146 seems to be pulling the mean for SAGP up to 51.05 (the means for all other groups are around 44). This is corroborated by the skew statistics which show that only the SAGP group has a skew value above 1. I may run the analyses where references is the outcome variable both with and without this case in the model, or I may use word count as a covariate in the model to try to account for it.
+
+    -   **WC:** For some reason, there seems to be a notable difference in mean word count between the single-authored fraudulent group and the rest of the groups. I could speculate as to why this is the case, but I may do an unplanned follow-up analysis of this.
+
+2.  Frequencies will now be produced for categorical variables, both for the data in general and within `PaperType` groups.
 
 -   First, we will make the variables `inst_pres`, `gender`, `simple_reason`, `Country`, and `PaperType` factor variables.
 
@@ -242,3 +250,25 @@ freq_tab_simple_reason
 freq_tab_Country
 freq_tab_PaperType
 ```
+
+-   Let's take a look at the way these are split:
+
+    -   First, there seems to ba a preponderance of lower status (not major) research institutions in the whole dataset (70:18).
+
+    -   Next, most of the papers were retracted due to fabricated/falsified data (*n* = 27), followed by those that manipulated images (*n* = 12), fabricated/falsified images (*n* = 3), or both fabricated/falsified data and images (*n* = 2).
+
+    -   For country, the most common category of papers seem to be from the United States (*n* = 29), followed by China and India (both *n* = 10) and the Netherlands (*n* = 6), with no other countries totaling more than *n* = 4.
+
+    -   Finally, we can see that the papers are evenly split between each of our groups (*n* = 22; *N* = 88).
+
+-   Next, we will produce the frequencies within `PaperType` groups. Because we were not able to perfectly match across our matching characteristics, we will take this opportunity to look at how far off we were. A proportion table will be produced to more easily compare frequencies across `PaperType` groups.
+
+    -   First, we need to make the matching dummy variables into factor variables with labels to make them more interpretable.
+
+        ```{r}
+        # Creating factor variables out of the dummy variables that track matching across groups
+        data$different_country <- factor(data$different_country, levels = c(0, 1), labels = c("Same Country", "Different Country"))
+        data$different_gender <- factor(data$different_gender, levels = c(0, 1), labels = c("Same Gender", "Different Gender"))
+        data$different_inst_pres <- factor(data$different_inst_pres, levels = c(0, 1), labels = c("Same Institutional Prestige", "Different Institutional Prestige"))
+        data$different_journal <- factor(data$different_journal, levels = c(0, 1), labels = c("Same Journal", "Different Journal"))
+        ```

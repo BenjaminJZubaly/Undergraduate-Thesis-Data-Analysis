@@ -801,4 +801,93 @@ hyp_two_a_mann_test
 
 #### **Testing Hypothesis 2b**
 
-To test **Hypothesis 2b** we will conduct a one-way analysis of variance (ANOVA) to compare group means of `Refs` for SAFP, MAFP, SAGP, and MAGP. That is, we will determine whether SAFP contains more linguistic obfuscation than the genuine paper groups but less linguistic obfuscation than the MAFP. As references are technically count, rather than continuous, data, there is a higher likelihood that it will violate the assumption of normality, so in this case we will instead run a Mann-Whitney U test to compare the two groups by their median `Refs`.
+To test **Hypothesis 2b** we will conduct a one-way analysis of variance (ANOVA) to compare group means of `Refs` for SAFP, MAFP, SAGP, and MAGP. That is, we will determine whether SAFP contains more linguistic obfuscation than the genuine paper groups but less linguistic obfuscation than the MAFP. As references are technically count, rather than continuous, data, there is a higher likelihood that it will violate the assumption of normality, so in this case we will instead run a Kruskal-Wallis test to compare the groups by their median `Refs`.
+
+1.  To check the assumption of normality we will use the `ggplot2` package to create Q-Q plots for `Refs`. The Q-Q plots will be investigated visually. If the assumption of normality is violated we will use the non-parametric Kruskal-Wallis test instead.
+
+```{r}
+# To produce Q-Q plots for Refs within the PaperType groups
+ggplot(data, aes(sample = Refs)) + 
+  stat_qq() + 
+  facet_wrap(~ PaperType) +
+  geom_qq_line()
+```
+
+-   Again, the data do not look like they are normally distributed based on the QQ-plots, especially for SAGP. To test this formally, we conduct Shapiro-Wilks tests for normality within groups.
+
+```{r}
+# Performing the Shapiro-Wilks test for normality within each group
+sw_results_Refs_PT <- data %>%
+  group_by(PaperType) %>%
+  summarise(SW_test_result4 = list(shapiro.test(Refs)))
+
+# Displaying the results
+sw_results_Refs_PT$SW_test_result4[[1]]
+sw_results_Refs_PT$SW_test_result4[[2]]
+sw_results_Refs_PT$SW_test_result4[[3]]
+sw_results_Refs_PT$SW_test_result4[[4]]
+```
+
+-   Indeed, the Shapiro-Wilks tests (except for the MAFP group) indicate that we should reject the null hypothesis that the data are normally distributed. We will now skip past testing for homogeneity of variances to the Kruskal-Wallis test as a robust version of a one-way ANOVA to test if there are any differences between group medians for references.
+
+2.  Now to conduct the Kruskal-Wallis test.
+
+```{r}
+# To conduct Kruskal-Wallis
+hyp_two_b_krusk <- kruskal.test(Refs ~ PaperType, data = data)
+
+# To print the results of the Kruskal-Wallis test
+hyp_two_b_krusk
+```
+
+-   The Kruskal-Wallis test indicates that we should accept the null hypothesis that there are no differences between the median `Refs` across groups. Similarly to **Hypothesis 2a**, this test should be robust to outliers, so there is no need to remove them here.
+
+### **Hypothesis 3: Certainty**
+
+**Hypothesis 3** investigates the use of certainty language in cases of scientific fraud. While a case study of Deidrik Stapel tended to use more certain language [@markowitz2014], others have found less certainty language in retracted papers than non-retracted papers [@dehdarirad2023]. Thus, **Hypothesis 3** is meant to provide clarity regarding the use of certainty language in scientific fraud. Specifically, it is stated as follows:
+
+**Hypothesis 3:** Fraudulent research will contain less certainty than non-fraudulent research. \[Replication\]
+
+#### **Testing Hypothesis 3:**
+
+To test **Hypothesis 3**, we will compare the mean `CertSent` score between the `FPaper` and `GPaper` groups using an independent-samples t-test.
+
+1.  To check the assumption of normality we will use the `ggplot2` package to create Q-Q plots for `CertSent` within the `FPaper` and `GPaper` groups. The Q-Q plots will be investigated visually. If the assumption of normality is violated we will use a bootstrapped t-test to fit a more robust model.
+
+```{r}
+# To produce Q-Q plots for CertSent within the FPaper and GPaper groups
+ggplot(data, aes(sample = CertSent)) + 
+  stat_qq() + 
+  facet_wrap(~ Genuine_or_Fraudulent) +
+  geom_qq_line()
+```
+
+-   The QQ-plots seem to diverge from normality in the middle of the distribution (for fraudulent papers) and at the lower end of the distribution (for the genuine papers). I will assess non-normality more formally using Shapiro-Wilks tests within groups.
+
+```{r}
+# Performing the Shapiro-Wilks test for normality within each group
+sw_results_CertSent_GorF <- data %>%
+  group_by(Genuine_or_Fraudulent) %>%
+  summarise(SW_test_result5 = list(shapiro.test(CertSent)))
+
+# Displaying the results
+sw_results_CertSent_GorF$SW_test_result5[[1]]
+sw_results_CertSent_GorF$SW_test_result5[[2]]
+```
+
+-   The results from the Shapiro-Wilks test for normality indicate that we should accept the null hypothesis that the data are normally distributed within groups.
+
+-   Thus, we may assume normality for our t-test.
+
+2.  To check the assumption of homogeneity of variances, we will conduct Levene’s test using the `car` package.
+
+```{r}
+# To load the car package for Levene's test
+library(car)
+
+# To conduct Levene's test for homogeneity of variances
+hyp_three_levene_test <- leveneTest(CertSent ~ Genuine_or_Fraudulent, data = data)
+
+# To display the Levene's test result
+hyp_three_levene_test
+```

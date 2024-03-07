@@ -120,4 +120,54 @@ references:
   title-short: Can linguistic features unmask fraudulent research?
   type: thesis
   URL: "https://studenttheses.uu.nl/handle/20.500.12932/42411"
+- id: markowitz2014
+  accessed: "08:17:32"
+  author:
+  - family: Markowitz
+    given: David M.
+  - family: Hancock
+    given: Jeffrey T.
+  container-title: PLoS ONE
+  container-title-short: PLoS One
+  DOI: 10.1371/journal.pone.0105937
+  ISSN: 1932-6203
+  issue: 8
+  issued: 2014-08-25
+  key: CYUHAIXH
+  libraryID: 1
+  page: e105937
+  PMCID: PMC4143312
+  PMID: 25153333
+  providerKey: 2509FBBE-5BB0-44C4-B119-6083A81ED673
+  source: PubMed Central
+  title: "Linguistic Traces of a Scientific Fraud: The Case of Diederik
+    Stapel"
+  title-short: Linguistic Traces of a Scientific Fraud
+  type: article-journal
+  URL: "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4143312/"
+  volume: 9
+- id: dehdarirad2023
+  accessed: "21:25:11"
+  author:
+  - family: Dehdarirad
+    given: Tahereh
+  - family: Schirone
+    given: Marco
+  container-title: Journal of Information Science
+  DOI: 10.1177/01655515231176650
+  ISSN: 0165-5515
+  issued: 2023-05-25
+  key: 3YYAE58G
+  language: en
+  libraryID: 1
+  page: 01655515231176650
+  providerKey: 2509FBBE-5BB0-44C4-B119-6083A81ED673
+  Publisher: SAGE
+  source: SAGE Journals
+  title: "Use of positive terms and certainty language in retracted and
+    non-retracted articles: The case of biochemistry"
+  title-short: Use of positive terms and certainty language in retracted
+    and non-retracted articles
+  type: article-journal
+  URL: "https://doi.org/10.1177/01655515231176650"
 ...

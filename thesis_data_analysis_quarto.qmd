@@ -891,3 +891,72 @@ hyp_three_levene_test <- leveneTest(CertSent ~ Genuine_or_Fraudulent, data = dat
 # To display the Levene's test result
 hyp_three_levene_test
 ```
+
+-   Levene's test for homogeneity of variance indicates that we should reject the null hypothesis that the variances of the two groups is equal. Thus, we will run a Welch's t-test, which does not assume equal variances.
+
+3.  Conducting the Welch's t-test.
+
+```{r}
+# To conduct Welch's t-test
+hyp_three_welch_t_test <- t.test(CertSent ~ Genuine_or_Fraudulent, data = data, var.equal = FALSE)
+
+# To print the Welch's t-test result
+hyp_three_welch_t_test
+```
+
+-   Contrary to our hypothesis, Fraudulent Papers actually have higher mean certainty sentiment than Genuine Papers, although this result is not significant.
+
+    -   These results align with [@dehdarirad2023].
+
+### **Hypothesis 4:**
+
+**Hypothesis 4** is a logical extension of the notion that to hide information you must first have control over related information flow. Based on this principle, **Hypothesis 4** is formulated as follows:
+
+**Hypothesis 4:** For multi-author fraudulent papers, the fraudulent author will be the corresponding author more frequently than other authors. \[Novel\]
+
+**Hypothesis 4** rests on the following two assumptions:
+
+-   *First, all authors on a paper are equally likely to be the corresponding author.* Although this assumption oversimplifies norms of assigning scientists to be corresponding authors, in the absence of more information regarding, for example, author order, author responsibilities, or laboratory status, it is the most accurate prediction we can make regarding the likelihood of an author being the corresponding author. That is, in the absence of other information it is the baseline prediction.
+
+-   *Second, if fraudulent authors to not attempt to control information flow, they are equally likely to be the corresponding as their coauthors are.* This may also oversimplify the norms of assigning scientists to be corresponding authors. For example, it is possible that fraudulent authors perform more data management, and it is possible that scientists that are responsible for data management are more likely to be corresponding authors. However, given the absence of this information (e.g., regarding research group norms), this assumption is reasonable.
+
+These two assumptions allow us to make a prediction regarding the baseline expected frequency that fraudulent authors will be the corresponding authors of fraudulent research papers if they do not attempt to control information flow.
+
+#### **Testing Hypothesis 4:**
+
+To test **Hypothesis 4** we will conduct a binomial test to compare the observed likelihood that the fraudulent author is the corresponding author (i.e., `FraudCorrAuth`) to the expected probability given the assumption of equal likelihood for all authors and the average number of authors on each MAFP.
+
+1.  To attain the expected probabiltiy we will calculate the inverse of the mean number of authors on all MAFP where the corresponding author is known. To do this, we will first need to filter out other  `PaperType` categories and MAFP cases where the corresponding author is unknown (i.e., `FraudCorrAuth` has a missing value) to make a new data frame, `hypothesis_four_df`. Then, we will calculate the mean `NumAuth` within this data frame and take its inverse.
+
+```{r}
+# To create data frame that only includes MAFP with a score for FraudCorrAuth
+hypothesis_four_df <- data[data$PaperType == 'MAFP' & data$FraudCorrAuth %in% c("0", "1"), ]
+
+# To calculate the mean number of authors within the data frame
+mean_MAFP_NumAuth_corrauth_known <- mean(hypothesis_four_df$NumAuth)
+
+# To display the mean value
+mean_MAFP_NumAuth_corrauth_known
+
+# To calculate the inverse of mean_MAFP_NumAuth_corrauth_known
+expected_prob_FraudCorrAuth <- 1 / mean_MAFP_NumAuth_corrauth_known
+
+# To display the expected probability
+expected_prob_FraudCorrAuth
+```
+
+-   The mean number of authors in this subsample is 3.125, and the expected likelihood that the fraudulent author would be the corresponding author is therefore .32.
+
+2.  Next, we will conduct a binomial test to compare the observed likelihood that a corresponding author is the fraudulent author to the expected probability (`expected_prob_FraudCorrAuth`).
+
+```{r}
+# To run the binomial test with the expected probability within the hypothesis four data frame
+hyp_four_binomial_test <- binom.test(sum(hypothesis_four_df$FraudCorrAuth), nrow(hypothesis_four_df), p = expected_prob_FraudCorrAuth, alternative = "two.sided")
+
+# To print the binomial test results
+hyp_four_binomial_test
+```
+
+-   Although our observed likelihood is slightly higher than our expected probability, the hypothesis test indicates that we should accept the null hypothesis that there is no difference between them.
+
+    -   Of course, this test has very low power, with only 8 trials.

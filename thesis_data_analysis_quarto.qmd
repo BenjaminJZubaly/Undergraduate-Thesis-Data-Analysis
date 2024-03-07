@@ -54,7 +54,7 @@ Although the following variables may not exist until after the data cleaning sec
 
 `NumAuth`: Count variable indicating the number of authors for each paper.
 
-`abstraction`: Abstraction index composed of the sum of standardized scores for `article`, `prep`, and `quantity`.
+`abstraction`: Abstraction index composed of the sum of standardized scores for `article`, `prep`, and `quantity`.
 
 `article`: Articles from LIWC.
 
@@ -102,7 +102,7 @@ I have viewed the data frame, and the data seems to have loaded correctly.
 
 To conduct the analysis, we will first need to calculate the `LingObf` variable by calculating the `abstraction` index and `jargon` words; creating standardized scores for `abstraction`, `cause`, `jargon`, `emo_pos`, and `flesch_re`; and calculating the `LingObf` composite variable from these standardized scores.
 
-1.  First, we will calculate the `abstraction` index by creating standardized scores for `article`, `prep`, and `quantity` and summing them.
+1.  First, we will calculate the `abstraction` index by creating standardized scores for `article`, `prep`, and `quantity` and summing them.
 
 ```{r}
 # Calculate standardized scores for article, prep, and quantity and add them to the dataset
@@ -138,7 +138,7 @@ data$flesch_re_standardized <- scale(data$flesch_re)
 
 -   After viewing the data, the variable transformations seem to have occurred appropriately.
 
-4.  Now we will calculate the `LingObf` variable using the following formula: \[cause_standardized + abstraction_standardized + jargon_standardized\] – \[emo_pos_standardized + flesch_re_standardized\].
+4.  Now we will calculate the `LingObf` variable using the following formula: \[cause_standardized + abstraction_standardized + jargon_standardized\] – \[emo_pos_standardized + flesch_re_standardized\].
 
 ```{r}
 # Calculate 'LingObf'
@@ -541,7 +541,7 @@ $$
 LFI_i = (C_i + A_i + J_i) - (P_i + F_i)
 $$
 
--   If this model is internally consistent, we should expect that each of the variables within the aggregated variables (i.e., that are within parentheses with one another) should be positively correlate. We should also expect that variables will be negatively correlated across the aggregates (i.e., each of the variables that are in opposite aggregates.
+-   If this model is internally consistent, we should expect that each of the variables within the aggregated variables (i.e., that are within parentheses with one another) should be positively correlate. We should also expect that variables will be negatively correlated across the aggregates (i.e., each of the variables that are in opposite aggregates).
 
     -   Expected Positive Correlations:
 
@@ -565,4 +565,26 @@ $$
 
     -   The observed relationships here may be expected *a priori* in some cases (e.g., the relationship between jargon and Flesch reading ease may be expected to be a positive relationship because the longer sentences someone writes the more likely they may be to use nonstandard words, simply by volume). However, from an internal consistency perspective, most of the relationships (8/10) we have observed here are either in the wrong direction or are too small to be considered.
 
+        -   This warrants serious consideration for whether our findings for hypothesis A can be interpreted appropriately.
+
 # Testing Hypotheses
+
+### **Hypothesis 1: Linguistic Obfuscation Hypothesis**
+
+**Hypothesis 1** consists of two variants. The first, **Hypothesis 1a**, is the general linguistic obfuscation hypothesis tested by @markowitz2016 which we will test in order to replicate their previous findings. The second, **Hypothesis 1b**, consists of our specific variant of the linguistic obfuscation hypothesis that states fraudulent scientists obfuscate their writing to make their work less accessible to their research group, rather than those outside their research group. This leads to the prediction that SAFP—which presumably are written without the presence of a research group—will use less linguistic obfuscation. Specifically, these hypotheses are stated follows:
+
+**Hypothesis 1a:** Fraudulent research will be written with more linguistic obfuscation than non-fraudulent research. \[Replication\]
+
+**Hypothesis 1b:** Single-author fraudulent research will be written with more linguistic obfuscation than non-fraudulent research but less linguistic obfuscation than multi-author fraudulent research. \[Novel\]
+
+#### **Testing Hypothesis 1a**
+
+To test **Hypothesis 1a**, we will conduct an independent samples t-test comparing the mean levels of `LingObf` of fraudulent papers (SAFP and MAFP combined) with genuine papers (SAGP and MAGP combined). That is, we will see whether the mean linguistic obfuscation differs between fraudulent papers and genuine papers.
+
+1.  To compare fraudulent publications with genuine publications, we will first create a new data frame that contains a dichotomous grouping variable for genuine or fraudulent papers (`Genuine_or_Fraudulent`). That is, the new data frame will combine SAGP and MAGP into one category (`GPaper`) and SAFP and MAFP into another category (`FPaper`). This will be done using the `dplyr` package.
+
+```{r}
+# To create the new data frame with new dichotomous variable Genuine_or_Fraudulent
+fraud_or_not_df <- data %>%
+  mutate(Genuine_or_Fraudulent = ifelse(PaperType %in% c("SAFP", "MAFP"), "FPaper", "GPaper"))
+```

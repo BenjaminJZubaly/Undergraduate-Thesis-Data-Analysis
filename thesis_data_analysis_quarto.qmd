@@ -82,6 +82,7 @@ install.packages("dplyr")       # For data manipulation and handling of missing 
 install.packages("psych")       # For descriptive statistics, correlations
 install.packages("ggplot2")     # For data visualization
 install.packages("car")         # For diagnostic tests such as Levene's test
+install.packages("effsize")     # For calculating effect sizes
 install.packages("rcompanion")  # For Games-Howell post-hoc test (if applicable)
 install.packages("dunn.test")   # For Dunn post-hoc test (if applicable)
 install.packages("boot")        # For bootstrapped hypothesis tests (if applicable)
@@ -601,7 +602,7 @@ data$Genuine_or_Fraudulent <- factor(data$Genuine_or_Fraudulent, levels = c("FPa
 2.  To check the assumption of normality we will use the `ggplot2` package to create Q-Q plots for `LingObf` within the `FPaper`and `GPaper` groups. The Q-Q plots will be investigated visually. Because each group will has *n* = 44 cases, our t-test will not necessarily be rhobust to violations of this assumption. If the assumption of normality is violated and we cannot fix it, then we will use a bootstrapped t-test to fit a more robust model.
 
 ```{r}
-# To produce Q-Q plot for LingObf within the FPaper and GPaper groups
+# To produce Q-Q plots for LingObf within the FPaper and GPaper groups
 ggplot(data, aes(sample = LingObf)) + 
   stat_qq() + 
   facet_wrap(~ Genuine_or_Fraudulent) +
@@ -652,4 +653,152 @@ sw_results_LingObf_GorP_2$SW_test_result2[[2]]
 
 -   Unfortunately, the result of the Shapiro-Wilk normality test indicates that removal of the outlier did not improve the situation. Instead, I will run the t-test with bootstrapped confidence intervals to attempt to make it robust to violations of the assumption of normality. Because bootstrapped t-tests are also robust to violations of the assumption of homogeneity of variance, we will skip this step.
 
-3.  Now we will run the independent samples t-test with bootstrapped
+3.  Now we will run the independent samples t-test with bootstrapped confidence intervals.
+
+```{r}
+# Load necessary libraries
+library(boot)
+library(effsize)
+
+# Setting the seed
+set.seed(616913)
+
+# Defining the statistic function for bootstrapping
+t_stat_boot_obf <- function(data, index) {
+  resampled_data_obf <- data[index, ] # Resample the data with replacement
+  t_result <- t.test(LingObf ~ Genuine_or_Fraudulent, data=resampled_data_obf)
+  return(t_result$statistic)
+}
+
+# Performing the bootstrapping
+boot_results_obf <- boot(data = data, statistic = t_stat_boot_obf, R = 1000)
+
+# Performing the regular t-test
+stud_t_test_obf <- t.test(LingObf ~ Genuine_or_Fraudulent, data = data)
+
+# Calculating Cohen's d using the effsize package
+d_obf <- cohen.d(LingObf ~ Genuine_or_Fraudulent, data = data)
+
+# Calculate the 95% confidence interval from the bootstrapped results
+boot_ci_obf <- boot.ci(boot_results_obf, type = "bca")
+
+# Report the results
+cat("Mean Difference: ", stud_t_test_obf$estimate, "\n",
+    "95% CI: ", boot_ci_obf$bca[4], boot_ci_obf$bca[5], "\n",
+    "t-value: ", stud_t_test_obf$statistic, "\n",
+    "p-value: ", stud_t_test_obf$p.value, "\n",
+    "Cohen's d: ", d_obf$estimate, "\n")
+```
+
+-   The results of this bootstrapped t-test with 1,000 resamples does not support **Hypothesis 1a**. We should accept the null hypothesis that the means of the two groups are the same.
+
+#### **Testing Hypothesis 1b**
+
+To test **Hypothesis 1b** we will conduct a one-way analysis of variance (ANOVA) to compare group means of `LingObf` for SAFP, MAFP, SAGP, and MAGP. That is, we will determine whether SAFP contains more linguistic obfuscation than the genuine paper groups but less linguistic obfuscation than the MAFP.
+
+1.  To check the assumption of normality we will use the `ggplot2` package to create Q-Q plots for `LingObf` using our original study dataset. The Q-Q plots will be investigated visually. If the assumption of normality is violated we will use a bootstrapped t-test to fit a more robust model.
+
+```{r}
+# To produce Q-Q plots for LingObf within the PaperType groups
+ggplot(data, aes(sample = LingObf)) + 
+  stat_qq() + 
+  facet_wrap(~ PaperType) +
+  geom_qq_line()
+```
+
+-   I am not satisfied with the plots within PaperType groups for SAFP, MAGP, or SAGP. Therefore, we will test for non-normality using a Shapiro-Wilk test within each group.
+
+```{r}
+# Performing the Shapiro-Wilks test for normality within each group
+sw_results_LingObf_PT <- data %>%
+  group_by(PaperType) %>%
+  summarise(SW_test_result2 = list(shapiro.test(LingObf)))
+
+# Displaying the results
+sw_results_LingObf_PT$SW_test_result2[[1]]
+sw_results_LingObf_PT$SW_test_result2[[2]]
+sw_results_LingObf_PT$SW_test_result2[[3]]
+sw_results_LingObf_PT$SW_test_result2[[4]]
+```
+
+-   As I suspected, the results for the Shapiro-Wilk test for normality indicate that for the SAFP, MAGP, or SAGP we should reject the null hypothesis that the data are normally distributed. Therefore, we will run a bootstrapped ANOVA to test for differences between groups, and we will skip the test for assuming homogeneity of variances again as well.
+
+2.  We will now run the one-way ANOVA with bootstrapped confidence intervals.
+
+```{r}
+# Setting the seed
+set.seed(616913)
+
+# Define the statistic function for bootstrapping ANOVA
+f_stat_boot_obf <- function(data, index) {
+  resampled_data <- data[index, ] # Resample the data with replacement
+  aov_result <- aov(LingObf ~ PaperType, data=resampled_data)
+  return(summary(aov_result)[[1]]$F[1]) # Extract the F-statistic
+}
+
+# Perform the bootstrapping
+boot_results_f_obf <- boot(data = data, statistic = f_stat_boot_obf, R = 1000)
+
+# Perform and print the original ANOVA to get the original F-statistic and p-value
+original_aov_obf <- aov(LingObf ~ PaperType, data=data)
+summary(original_aov_obf)
+
+# Calculate and report the bootstrapped confidence interval for the F-statistic
+boot_f_ci_obf <- boot.ci(boot_results_f_obf, type="bca")
+cat("Bootstrapped 95% Confidence Interval for F-statistic: ", boot_f_ci_obf$bca[4], " to ", boot_f_ci_obf$bca[5], "\n")
+```
+
+-   The results of this bootstrapped one-way ANOVA indicate that we should accept the null hypothesis that there are no differences between the `PaperType` groups on the `LingObf` variable. No post-hoc test needs to be conducted.
+
+### **Hypothesis 2: References Hypothesis**
+
+**Hypothesis 2** also consists of two variants. The first is that fraudulent research will contain more references than non-fraudulent research, functioning to make the research more costly to assess from outside readers [@markowitz2016] or as an analogue to third-person pronoun usage in other linguistic studies of deception [@schmidt2022]. The second is our adaptation of the first version which emphasizes the salience of the research group as the audience of this communicative style, similar to the logic of Hypothesis 1b. Specifically, the hypotheses are as follows:
+
+**Hypothesis 2a:** Fraudulent research will contain more references than non-fraudulent research. \[Replication\]
+
+**Hypothesis 2b:** Single-author fraudulent research will contain more references than non-fraudulent research but fewer references than multi-author fraudulent research. \[Novel\]
+
+#### **Testing Hypothesis 2a**
+
+To test **Hypothesis 2a**, we will compare the mean number of `Refs` between the `FPaper` and `GPaper` groups using an independent-samples t-test.
+
+1.  To check the assumption of normality we will use the `ggplot2` package to create Q-Q plots for `Refs` within the `Genuine_or_Fraudulent` dichotomous variable. The Q-Q plots will be investigated visually. As references are technically count, rather than continuous, data, there is a higher likelihood that it will violate the assumption of normality. If this is the case we will instead run a Mann-Whitney U test to compare the two groups by their median `Refs`.
+
+```{r}
+# To produce Q-Q plots for Refs within the FPaper and GPaper groups
+ggplot(data, aes(sample = Refs)) + 
+  stat_qq() + 
+  facet_wrap(~ Genuine_or_Fraudulent) +
+  geom_qq_line()
+```
+
+-   The QQ-plots do not look promising, especially for genuine papers, which we noted likely contained outlier values before. We will test normality more formally with a Shapiro-Wilks test.
+
+```{r}
+# Performing the Shapiro-Wilks test for normality within each group
+sw_results_Refs_GorP <- data %>%
+  group_by(Genuine_or_Fraudulent) %>%
+  summarise(SW_test_result3 = list(shapiro.test(Refs)))
+
+# Displaying the results
+sw_results_Refs_GorP$SW_test_result3[[1]]
+sw_results_Refs_GorP$SW_test_result3[[2]]
+```
+
+-   For both groups, the Shapiro-Wilks test for normality indicates that we should reject the null hypothesis that the data is normally distributed. Therefore, we will move right ahead with a Mann-Whitney U test, skipping Levene's test for homogeneity of variances.
+
+2.  Conducting the Mann-Whitney U test.
+
+```{r}
+# To conduct Mann-Whitney U test
+hyp_two_a_mann_test <- wilcox.test(Refs ~ Genuine_or_Fraudulent, data = data)
+
+# Displaying the results
+hyp_two_a_mann_test
+```
+
+-   The results of the Mann-Whitney U test indicate that we should accept the null hypothesis that the medians of the two groups are different. Although we mentioned in the data exploration section that we might want to remove the outlier before testing hypotheses with references as the outcome variable, the Mann-Whitney U test does not use means and should therefore not be biased due to outliers leverage on the statistics used. Therefore, it is not necessary to test this with the outlier removed.
+
+#### **Testing Hypothesis 2b**
+
+To test **Hypothesis 2b** we will conduct a one-way analysis of variance (ANOVA) to compare group means of `Refs` for SAFP, MAFP, SAGP, and MAGP. That is, we will determine whether SAFP contains more linguistic obfuscation than the genuine paper groups but less linguistic obfuscation than the MAFP. As references are technically count, rather than continuous, data, there is a higher likelihood that it will violate the assumption of normality, so in this case we will instead run a Mann-Whitney U test to compare the two groups by their median `Refs`.

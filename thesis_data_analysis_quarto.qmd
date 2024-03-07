@@ -84,6 +84,7 @@ install.packages("ggplot2")     # For data visualization
 install.packages("car")         # For diagnostic tests such as Levene's test
 install.packages("rcompanion")  # For Games-Howell post-hoc test (if applicable)
 install.packages("dunn.test")   # For Dunn post-hoc test (if applicable)
+install.packages("boot")        # For bootstrapped hypothesis tests (if applicable)
 ```
 
 ## Initial Import of Data
@@ -581,10 +582,74 @@ $$
 
 To test **Hypothesis 1a**, we will conduct an independent samples t-test comparing the mean levels of `LingObf` of fraudulent papers (SAFP and MAFP combined) with genuine papers (SAGP and MAGP combined). That is, we will see whether the mean linguistic obfuscation differs between fraudulent papers and genuine papers.
 
-1.  To compare fraudulent publications with genuine publications, we will first create a new data frame that contains a dichotomous grouping variable for genuine or fraudulent papers (`Genuine_or_Fraudulent`). That is, the new data frame will combine SAGP and MAGP into one category (`GPaper`) and SAFP and MAFP into another category (`FPaper`). This will be done using the `dplyr` package.
+1.  To compare fraudulent publications with genuine publications, we will first add a new dichotomous grouping variable for genuine or fraudulent papers (`Genuine_or_Fraudulent`). That is, the new variable will combine SAGP and MAGP into one category (`GPaper`) and SAFP and MAFP into another category (`FPaper`). This will be done using the `dplyr` package. Then we will make the variable a factor variable.
 
 ```{r}
-# To create the new data frame with new dichotomous variable Genuine_or_Fraudulent
-fraud_or_not_df <- data %>%
-  mutate(Genuine_or_Fraudulent = ifelse(PaperType %in% c("SAFP", "MAFP"), "FPaper", "GPaper"))
+data$Genuine_or_Fraudulent <- ifelse(data$PaperType %in% c("SAFP", "MAFP"), "FPaper", "GPaper")
 ```
+
+-   I have checked the data frame, and this transformation seems to have been done correctly.
+
+-   Now to make it a factor variable.
+
+```{r}
+data$Genuine_or_Fraudulent <- factor(data$Genuine_or_Fraudulent, levels = c("FPaper", "GPaper"), labels = c("Fraudulent Papers", "Genuine Papers"))
+```
+
+-   This transformation also seems to have been done correctly.
+
+2.  To check the assumption of normality we will use the `ggplot2` package to create Q-Q plots for `LingObf` within the `FPaper`and `GPaper` groups. The Q-Q plots will be investigated visually. Because each group will has *n* = 44 cases, our t-test will not necessarily be rhobust to violations of this assumption. If the assumption of normality is violated and we cannot fix it, then we will use a bootstrapped t-test to fit a more robust model.
+
+```{r}
+# To produce Q-Q plot for LingObf within the FPaper and GPaper groups
+ggplot(data, aes(sample = LingObf)) + 
+  stat_qq() + 
+  facet_wrap(~ Genuine_or_Fraudulent) +
+  geom_qq_line()
+```
+
+-   The QQ plots are relatively close to the theoretical values, but there is some deviation at the ends of the distributions (particularly in the genuine papers group with a huge outlier). Because of this, I will run a Shapiro-Wilk test on each of the groups.
+
+```{r}
+# Performing the Shapiro-Wilks test for normality within each group
+sw_results_LingObf_GorP <- data %>%
+  group_by(Genuine_or_Fraudulent) %>%
+  summarise(SW_test_result = list(shapiro.test(LingObf)))
+
+# Displaying the results
+sw_results_LingObf_GorP$SW_test_result[[1]]
+sw_results_LingObf_GorP$SW_test_result[[2]]
+```
+
+-   The Shapiro-Wilk tests indicate that for the Fraudulent Paper group we should accept the null hypothesis that the data are normally distributed, and for the Genuine Paper group we should reject the null hypothesis that the data are normally distributed. I am now going to try to remove the outlier (lowest value for `LingObf`) and rerun these tests to see if that takes care of the issue. I will create a new data frame (`data_no_gpaper_obf_outlier`) without the outlier so that I can preserve the original data for later analyses.
+
+```{r}
+min_value_obf <- min(data$LingObf, na.rm = TRUE)
+
+# Remove the row with the minimum LingObf value from the entire dataset
+data_no_gpaper_obf_outlier <- data %>%
+  filter(LingObf != min_value_obf)
+```
+
+-   Now that we have removed the lowest value for GPaper, we will produce the QQ-plots and the Shapiro-Wilk normality tests again.
+
+```{r}
+# To produce Q-Q plot for LingObf within the FPaper and GPaper groups in the new data frame
+ggplot(data_no_gpaper_obf_outlier, aes(sample = LingObf)) + 
+  stat_qq() + 
+  facet_wrap(~ Genuine_or_Fraudulent) +
+  geom_qq_line()
+
+# Performing the Shapiro-Wilks test for normality within each group in the new data frame
+sw_results_LingObf_GorP_2 <- data_no_gpaper_obf_outlier %>%
+  group_by(Genuine_or_Fraudulent) %>%
+  summarise(SW_test_result2 = list(shapiro.test(LingObf)))
+
+# Displaying the results
+sw_results_LingObf_GorP_2$SW_test_result2[[1]]
+sw_results_LingObf_GorP_2$SW_test_result2[[2]]
+```
+
+-   Unfortunately, the result of the Shapiro-Wilk normality test indicates that removal of the outlier did not improve the situation. Instead, I will run the t-test with bootstrapped confidence intervals to attempt to make it robust to violations of the assumption of normality. Because bootstrapped t-tests are also robust to violations of the assumption of homogeneity of variance, we will skip this step.
+
+3.  Now we will run the independent samples t-test with bootstrapped

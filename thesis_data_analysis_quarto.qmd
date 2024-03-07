@@ -960,3 +960,13 @@ hyp_four_binomial_test
 -   Although our observed likelihood is slightly higher than our expected probability, the hypothesis test indicates that we should accept the null hypothesis that there is no difference between them.
 
     -   Of course, this test has very low power, with only 8 trials.
+
+# Saving Data
+
+Now I will quickly export the main data frame to a csv file.
+
+```{r}
+write.csv(data, "post_analysis_study_dataset.csv")
+```
+
+The data is now available as "post_analysis_study_dataset.csv".

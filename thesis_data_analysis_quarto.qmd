@@ -164,7 +164,7 @@ write.csv(data, "clean_study_data.csv")
 
 # Data Exploration
 
-## Dealing with Missing Data
+## Missing Data
 
 1.  Data will be first inspected for missing scores.
 
@@ -429,4 +429,54 @@ ggplot(data, aes(x = FraudCorrAuth)) +
 
 -   **FraudCorrAuth:** The fraudulent corresponding author variable shows an even split between papers for which the fraudulent author was and was not the corresponding author.
 
-2.  
+2.  Using the `ggplot2` package, frequency distributions and box plots will be generated for `LingObf`, `CertSent`, and `Refs` within `PaperType` groups.
+
+```{r}
+# To produce histogram and box plot for LingObf
+ggplot(data, aes(x = LingObf)) + 
+  geom_histogram(fill = "blue", color = "black") +
+  facet_wrap(~ PaperType) +
+  labs(title = "Histograms of Linguistic Obfuscation for Entire Dataset")
+ggplot(data, aes(y = LingObf)) + 
+  geom_boxplot(fill = "lightblue", color = "black") +
+  facet_wrap(~ PaperType) +
+  labs(title = "Box Plots of Linguistic Obfuscation Within Paper Type Groups")
+
+# To produce histogram and box plot for CertSent
+ggplot(data, aes(x = CertSent)) + 
+  geom_histogram(fill = "blue", color = "black") +
+  facet_wrap(~ PaperType) +
+  labs(title = "Histograms of Certainty Sentiment Within Paper Type Groups")
+ggplot(data, aes(y = CertSent)) + 
+  geom_boxplot(fill = "lightblue", color = "black") +
+  facet_wrap(~ PaperType) +
+  labs(title = "Box Plots of Certainty Sentiment Within Paper Type Groups")
+
+# To produce histogram and box plot for Refs
+ggplot(data, aes(x = Refs)) + 
+  geom_histogram(fill = "blue", color = "black") +
+  facet_wrap(~ PaperType) +
+  labs(title = "Histograms of References Within Paper Type Groups")
+ggplot(data, aes(y = Refs)) + 
+  geom_boxplot(fill = "lightblue", color = "black") +
+  facet_wrap(~ PaperType) +
+  labs(title = "Box Plots of References Within Paper Type Groups")
+```
+
+-   A few quick notes:
+
+    -   **LingObf:**
+
+        -   Positive outliers for linguistic obfuscation seem to be represented in the multi-author groups, and negative outliers seem to be in the single-author groups (although the lowest values do not show up on the SAFP box plot, perhaps because there are two of them that can be seen in the histogram which suggests that they may skew the spread statistics enough to envelop them within the whiskers).
+
+    -   **CertSent:**
+
+        -   The otulier at the low end of the certainty sentiment distribution seems to belong to the MAGP group.
+
+    -   **Refs:**
+
+        -   The positive outliers we have noted a couple times now for references seem to be in the SAGP group, corroborating our speculation above (see [Descriptive Statistics]).
+
+        -   Strangely, we noted that the references seemed to have two latent classes, but, at least visually, this does not seem to represent any particular paper group, as the latent classes show up in the SAFP and MAGP groups (as well as perhaps the SAGP group). I am not sure why this is.
+
+    -   Overall, the strange values are nto all within one group, which suggests that they are due to random variation rather than one paper that was not read appropriately by the text analysis programs (or some other form of systematic problem with one or two observations in the data set).

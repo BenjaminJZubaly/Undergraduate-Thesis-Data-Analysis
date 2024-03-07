@@ -480,3 +480,89 @@ ggplot(data, aes(y = Refs)) +
         -   Strangely, we noted that the references seemed to have two latent classes, but, at least visually, this does not seem to represent any particular paper group, as the latent classes show up in the SAFP and MAGP groups (as well as perhaps the SAGP group). I am not sure why this is.
 
     -   Overall, the strange values are nto all within one group, which suggests that they are due to random variation rather than one paper that was not read appropriately by the text analysis programs (or some other form of systematic problem with one or two observations in the data set).
+
+## Bivariate Correlations
+
+In order to further explore data characteristics, bivariate correlations between outcome variables will be produced. As these are only for exploring data and not testing predictions, assumptions will not be tested, and the relationships will not be probed for statistical significance. Then, correlations for subcomponents of composite variables will be produced.
+
+1.  First, Pearson bivariate correlations will be produced for `LingObf`, `CertSent`, and `Refs`.
+
+```{r}
+# To produce correlation matrix for LingObf, CertSent, and Refs variables within whole dataset
+  # To calculate the Pearson correlation coefficients between the numerical outcome variables
+correlation_matrix_num_outcomes <- cor(data[c("LingObf", "CertSent", "Refs")], use = "complete.obs", method = "pearson")
+  # To display the correlation matrix for numerical outcome variables
+correlation_matrix_num_outcomes
+```
+
+-   All of the variables here show negligible bivariate relationships.
+
+2.  Next, here are the point-biserial correlations between `FraudCorrAuth` and `LingObf`, `CertSent`, and `Refs`.
+
+```{r}
+# Calculating Point-biserial correlations between FraudCorrAuth and numerical outcome variables
+pbcorr_FraudCorrAuth_LingObf <- cor(data$FraudCorrAuth, data$LingObf, use = "complete.obs", method = "pearson")
+pbcorr_FraudCorrAuth_CertSent <- cor(data$FraudCorrAuth, data$CertSent, use = "complete.obs", method = "pearson")
+pbcorr_FraudCorrAuth_Refs <- cor(data$FraudCorrAuth, data$Refs, use = "complete.obs", method = "pearson")
+
+# Displaying the correlation coefficients
+pbcorr_FraudCorrAuth_LingObf
+pbcorr_FraudCorrAuth_CertSent
+pbcorr_FraudCorrAuth_Refs
+```
+
+-   While the relationship between FraudCorrAuth and LingObf is large (r = .55) and the relationship between FraudCorrAuth and CertSent is very large (r = .83), I will refrain from interpreting these because the sample is severely underpowered with a mere *n* = 8 observations.
+
+3.  Now, we will produce bivariate correlations for the subcomponents of the `abstraction` index (see [Data Cleaning] for more details.
+
+```{r}
+# Calculate pairwise correlations among the subcomponents of the abstraction index
+correlation_matrix_abstraction_subcomponents <- cor(data[,c("article", "prep", "quantity")])
+
+# Display the correlation matrix
+correlation_matrix_abstraction_subcomponents
+```
+
+-   The correlations here (.03 \< r \< .09) are quite a bit smaller (i.e., nonexistent) than @markowitz2016 found for their sample when they constructed the abstraction index (.176 \< r \< .263). This calls into question the reliability of the abstraction index as a subcomponent of the linguistic obfuscation index in our sample, and it calls into question the validity of each of the indicators of the abstraction index (articles, prepositions, and quantity words) in our sample.
+
+4.  Now we will produce Pearson bivariate correlations for the subcomponents of the `LingObf` index.
+
+```{r}
+# Calculate pairwise correlations among the subcomponents of LingObf
+correlation_matrix_LingObf_subcomponents <- cor(data[,c("cause", "abstraction", "jargon", "emo_pos", "flesch_re")])
+
+# Display the correlation matrix
+correlation_matrix_LingObf_subcomponents
+```
+
+-   If we let the Linguistic Obfuscation Index be *LFI*, causal terms be *C*, the abstraction index be *A*, jargon be *J*, positive emotion terms be *P*, and Flesch reading ease be *F*, the mathematical model for the construction of the Linguistic Obfuscation index for an observation *i* can be stated as follows:
+
+$$
+LFI_i = (C_i + A_i + J_i) - (P_i + F_i)
+$$
+
+-   If this model is internally consistent, we should expect that each of the variables within the aggregated variables (i.e., that are within parentheses with one another) should be positively correlate. We should also expect that variables will be negatively correlated across the aggregates (i.e., each of the variables that are in opposite aggregates.
+
+    -   Expected Positive Correlations:
+
+        -   We should expect the relationships between causal terms, the abstraction index, and jargon words to be positive. However, the relationships all seem to be (small) negative relationships.
+
+        -   We also should expect the relationship between positive emotion words and Flesch reading ease to be positive, but it is also a small, negative correlation.
+
+    -   Expected Negative Correlations:
+
+        -   As we should expect, there is a moderate negative relationship between causal terms and Flesch reading ease.
+
+        -   However, we should expect the relationship between causal terms and positive emotion terms to be negative, but it is a small, positive correlation.
+
+        -   We should expect a negative relationship between the abstraction index and positive emotion terms, but there is no relationship to speak of.
+
+        -   We also should expect a negative relationship between the abstraction index and Flesch reading ease, but there is a moderate positive correlation.
+
+        -   As should expect, there is a small negative relationship between Jargon and positive emotion terms.
+
+        -   Lastly, we should expect a negative correlation between jargon and Flesch reading ease, but there is a small, positive correlation between them.
+
+    -   The observed relationships here may be expected *a priori* in some cases (e.g., the relationship between jargon and Flesch reading ease may be expected to be a positive relationship because the longer sentences someone writes the more likely they may be to use nonstandard words, simply by volume). However, from an internal consistency perspective, most of the relationships (8/10) we have observed here are either in the wrong direction or are too small to be considered.
+
+# Testing Hypotheses

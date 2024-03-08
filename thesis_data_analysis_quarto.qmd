@@ -612,7 +612,7 @@ ggplot(data, aes(sample = LingObf)) +
 -   The QQ plots are relatively close to the theoretical values, but there is some deviation at the ends of the distributions (particularly in the genuine papers group with a huge outlier). Because of this, I will run a Shapiro-Wilk test on each of the groups.
 
 ```{r}
-# Performing the Shapiro-Wilks test for normality within each group
+# Performing the Shapiro-Wilk test for normality within each group
 sw_results_LingObf_GorP <- data %>%
   group_by(Genuine_or_Fraudulent) %>%
   summarise(SW_test_result = list(shapiro.test(LingObf)))
@@ -970,3 +970,171 @@ write.csv(data, "post_analysis_study_dataset.csv")
 ```
 
 The data is now available as "post_analysis_study_dataset.csv".
+
+# Follow Up Analysis
+
+This portion of the analysis was not preregistered. However, as Dr. Arbeau points out, the word count of papers may be a confound for our analyses assessing `Refs` between groups. To assess this possibility, we will create a new variable of the ratio of references to word count in a paper, and we will use this as our outcome variable to re-test **Hypothesis 2a** and **Hypothesis 2b**. Although both the Lexical Suite and Linguistic Inquiry and Word Count (LIWC) have produced word count variables in our dataset, will use the word count from the LIWC (i.e., `WC`), as this was the word count variable used to assess descriptive statistics.
+
+## Retesting Hypothesis 2a
+
+To retest **Hypothesis 2a**, we will first compute a new variable `RefWordRatio` by dividing `Refs` by `WC`. Then we will compare the mean `RefWordRatio` between the `FPaper` and `GPaper` groups using an independent-samples t-test.
+
+1.  Computing the `RefWordRatio`.
+
+```{r}
+data$RefWordRatio <- (data$Refs/data$WC)
+```
+
+2.  Computing descriptive statistics for `RefWordRatio` both in the whole dataset and between `FPaper` and `GPaper` groups.
+
+```{r}
+RefWordRatio_ds <- describe(data$RefWordRatio)
+RefWordRatio_ds
+
+RefWordRatio_ds_by_GorF <- describeBy(data$RefWordRatio, group = data$Genuine_or_Fraudulent)
+RefWordRatio_ds_by_GorF
+```
+
+-   In whole dataset:
+
+    -   Interestingly, the skew statistic is lower for the `RefWordRatio` variable compared to the `Refs` variable alone (see [Descriptive Statistics]).
+
+-   Within groups:
+
+    -   The skew statistic seems to be higher in the genuine paper group. We will assess this with QQ-plots.
+
+2.  Testing assumptions:
+    -   First, we will assess normality with QQ-plots within groups.
+
+```{r}
+# Constructing QQ-plots within groups
+ggplot(data, aes(sample = RefWordRatio)) + 
+  stat_qq() + 
+  facet_wrap(~ Genuine_or_Fraudulent) +
+  geom_qq_line()
+```
+
+-   The data for both groups is not very tight to the theoretical values. We should take a look at the Shapiro-Wilk test.
+
+```{r}
+# Performing the Shapiro-Wilk test for normality within each group
+sw_results_RefWordRatio_GorP <- data %>%
+  group_by(Genuine_or_Fraudulent) %>%
+  summarise(SW_test_result6 = list(shapiro.test(RefWordRatio)))
+
+# Displaying the results
+sw_results_RefWordRatio_GorP$SW_test_result6[[1]]
+sw_results_RefWordRatio_GorP$SW_test_result6[[2]]
+```
+
+-   The results of the Shapiro-Wilk test indicate that we should reject the null hypothesis that the data are normally distributed for either group. Therefore, we will conduct a bootstrapped t-test to compare the two groups using an empirically determined, robust confidence interval. This will also allow us to skip the test for homogeneity of variance.
+
+3.  Conducting the bootstrapped t-test.
+
+```{r}
+# Setting the seed
+set.seed(616913)
+
+# Defining the statistic function for bootstrapping
+t_stat_boot_RefWCRatio <- function(data, index) {
+  resampled_data_RefWCRatio <- data[index, ] # Resample the data with replacement
+  t_result <- t.test(RefWordRatio ~ Genuine_or_Fraudulent, data=resampled_data_RefWCRatio)
+  return(t_result$statistic)
+}
+
+# Performing the bootstrapping
+boot_results_RefWCRatio <- boot(data = data, statistic = t_stat_boot_RefWCRatio, R = 1000)
+
+# Performing the regular t-test
+stud_t_test_RefWCRatio <- t.test(RefWordRatio ~ Genuine_or_Fraudulent, data = data)
+
+# Calculating Cohen's d using the effsize package
+d_RefWCRatio <- cohen.d(RefWordRatio ~ Genuine_or_Fraudulent, data = data)
+
+# Calculate the 95% confidence interval from the bootstrapped results
+boot_ci_RefWCRatio <- boot.ci(boot_results_RefWCRatio, type = "bca")
+
+# Report the results
+cat("Mean Difference: ", stud_t_test_RefWCRatio$estimate, "\n",
+    "95% CI: ", boot_ci_RefWCRatio$bca[4], boot_ci_RefWCRatio$bca[5], "\n",
+    "t-value: ", stud_t_test_RefWCRatio$statistic, "\n",
+    "p-value: ", stud_t_test_RefWCRatio$p.value, "\n",
+    "Cohen's d: ", d_RefWCRatio$estimate, "\n")
+```
+
+-   The results of the t-test with bootstrapped confidence intervals indicate that we should accept the null hypothesis that there is no difference between the two groups.
+
+## Retesting Hypothesis 2b
+
+To retest **Hypothesis 2b** we will compare the mean `RefWordRatio` between the `PaperType` groups using an analysis of variance, after computing descriptive statistics within `PaperTyped` groups.
+
+1.  Computing descriptive statistics within `PaperType` groups.
+
+```{r}
+RefWordRatio_ds_by_PaperType <- describeBy(data$RefWordRatio, group = data$PaperType)
+RefWordRatio_ds_by_PaperType
+```
+
+-   There is not much to say about these descriptives (particularly when they are so small that it is difficult to assess them).
+
+2.  Testing assumptions:
+
+-   First, we will assess normality with QQ-plots within groups.
+
+```{r}
+# To produce Q-Q plots for Refs within the PaperType groups
+ggplot(data, aes(sample = RefWordRatio)) + 
+  stat_qq() + 
+  facet_wrap(~ PaperType) +
+  geom_qq_line()
+```
+
+-   The SAGP group looks like it deviated from normality towards the bottom of the distribution, so we will be performing the Shapiro-Wilk test for normality within PaperType groups.
+
+```{r}
+# Performing the Shapiro-Wilk test for normality within each group
+sw_results_RefWordRatio_PT <- data %>%
+  group_by(PaperType) %>%
+  summarise(SW_test_result7 = list(shapiro.test(RefWordRatio)))
+
+# Displaying the results
+sw_results_RefWordRatio_PT$SW_test_result7[[1]]
+sw_results_RefWordRatio_PT$SW_test_result7[[2]]
+sw_results_RefWordRatio_PT$SW_test_result7[[3]]
+sw_results_RefWordRatio_PT$SW_test_result7[[4]]
+```
+
+-   Although for most of the groups we can accept the null hypothesis of normally distributed data, the results for the SAGP indicate that we should reject the null. Therefore, we will skip the assumption of homogeneity of variance and conduct a one-way ANOVA with bootstrapped confidence intervals for the F-statistic.
+
+3.  Conducting the bootstrapped ANOVA.
+
+```{r}
+# Setting the seed
+set.seed(616913)
+
+# Define the statistic function for bootstrapping ANOVA
+f_stat_boot_RefWCRatio <- function(data, index) {
+  resampled_data <- data[index, ] # Resample the data with replacement
+  aov_result <- aov(RefWordRatio ~ PaperType, data=resampled_data)
+  return(summary(aov_result)[[1]]$F[1]) # Extract the F-statistic
+}
+
+# Perform the bootstrapping
+boot_results_f_RefWCRatio <- boot(data = data, statistic = f_stat_boot_RefWCRatio, R = 1000)
+
+# Perform and print the original ANOVA to get the original F-statistic and p-value
+original_aov_RefWCRatio <- aov(RefWordRatio ~ PaperType, data=data)
+summary(original_aov_RefWCRatio)
+
+# Calculate and report the bootstrapped confidence interval for the F-statistic
+boot_f_ci_RefWCRatio <- boot.ci(boot_results_f_RefWCRatio, type="bca")
+cat("Bootstrapped 95% Confidence Interval for F-statistic: ", boot_f_ci_RefWCRatio$bca[4], " to ", boot_f_ci_RefWCRatio$bca[5], "\n")
+```
+
+-   The results of the ANOVA and the fact that the observed F-statistic is within the bootstrapped confidence interval suggest that we should accept the null hypothesis that there is no difference between the means of the `PaperType` groups on the ratio of `Refs` to `WC`.
+
+# Saving Data
+
+```{r}
+write.csv(data, "post_followup_analyses_study_dataset.csv")
+```

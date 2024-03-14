@@ -13,7 +13,7 @@ library(apaTables)
   # For numerical outcome variables
 apa.cor.table(data[c("LingObf", "CertSent", "Refs")],
               filename = "num_outcomes_corr_table.doc",
-              table.number = 1)
+              table.number = 4)
 
   # For subcomponents of abstraction
 apa.cor.table(data[,c("article", "prep", "quantity")],

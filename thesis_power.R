@@ -3,13 +3,13 @@
 library(pwr)
 
 # For Hypothesis 1a
-pwr.t.test(d = .14, n = 44, 
+pwr.t.test(d = .32, n = 44, 
            sig.level = .05, 
            type = "two.sample", 
            alternative = "two.sided")
 
 # For Hypothesis 1b
-f_estimate_power_hyp1b <- sqrt((.9*3)/(88-4))
+f_estimate_power_hyp1b <- sqrt((1.916*3)/(88-4))
 pwr.anova.test(f = f_estimate_power_hyp1b, 
                k = 4,
                n = 22,

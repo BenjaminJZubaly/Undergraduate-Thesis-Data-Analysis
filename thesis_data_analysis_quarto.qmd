@@ -112,8 +112,8 @@ data$articles_standardized <- scale(data$article)
 data$prep_standardized <- scale(data$prep)
 data$quantity_standardized <- scale(data$quantity)
 
-# Create the new variable 'abstraction' as the sum of the three standardized variables
-data$abstraction <- (data$articles_standardized + data$prep_standardized + data$quantity_standardized)
+# Create the new variable 'abstraction' as the inverse of the sum of the three standardized variables
+data$abstraction <- (1/(data$articles_standardized + data$prep_standardized + data$quantity_standardized))
 ```
 
 -   After viewing the data, the transformations and variable calculation seem to have occurred appropriately.
@@ -423,7 +423,7 @@ ggplot(data, aes(x = FraudCorrAuth)) +
   labs(title = "Bar Plot of Fraudulent Corresponding Author for MAFP")
 ```
 
--   **LingObf:** Linguistic obfuscation seems to have a bit of a wonky distribution with a few outliers at the low end of the distribution (M = 0, SD = 1.67; from descriptives above). This can be observed in the box plot as well, which shows one of the particularly low values.
+-   **LingObf:** Linguistic obfuscation seems to have a relatively normal distribution with a somewhat strange jump in frequencies around 2.5 and a somewhat strange drop off in frequencies right above zero (M = 0, SD = 2.04; from descriptives above). The box plot shows a couple of potential outliers, but there are both high (2) and low (2) outliers, which may almost cancel eachother out in terms of being problematic.
 
 -   **CertSent:** Certainty sentiment does not seem to be skewed despite having an outlier at the low end of the distribution as well. The box plot highlights three values at the low end of the scale as being outliers.
 
@@ -469,7 +469,7 @@ ggplot(data, aes(y = Refs)) +
 
     -   **LingObf:**
 
-        -   Positive outliers for linguistic obfuscation seem to be represented in the multi-author groups, and negative outliers seem to be in the single-author groups (although the lowest values do not show up on the SAFP box plot, perhaps because there are two of them that can be seen in the histogram which suggests that they may skew the spread statistics enough to envelop them within the whiskers).
+        -   Outliers for linguistic obfuscation seem to be represented in each of the paper groups except for MAFP.
 
     -   **CertSent:**
 
@@ -497,7 +497,7 @@ correlation_matrix_num_outcomes <- cor(data[c("LingObf", "CertSent", "Refs")], u
 correlation_matrix_num_outcomes
 ```
 
--   All of the variables here show negligible bivariate relationships.
+-   All of the variables here show negligible bivariate relationships, and none of them are significant (I produced the correlation table from another script to see the significance).
 
 2.  Next, here are the point-biserial correlations between `FraudCorrAuth` and `LingObf`, `CertSent`, and `Refs`.
 
@@ -513,7 +513,7 @@ pbcorr_FraudCorrAuth_CertSent
 pbcorr_FraudCorrAuth_Refs
 ```
 
--   While the relationship between FraudCorrAuth and LingObf is large (r = .55) and the relationship between FraudCorrAuth and CertSent is very large (r = .83), I will refrain from interpreting these because the sample is severely underpowered with a mere *n* = 8 observations.
+-   While the relationship between FraudCorrAuth and LingObf is large (r = .57) and the relationship between FraudCorrAuth and CertSent is very large (r = .83), I will refrain from interpreting these because the sample is severely underpowered with a mere *n* = 8 observations.
 
 3.  Now, we will produce bivariate correlations for the subcomponents of the `abstraction` index (see [Data Cleaning] for more details.
 
@@ -525,7 +525,7 @@ correlation_matrix_abstraction_subcomponents <- cor(data[,c("article", "prep", "
 correlation_matrix_abstraction_subcomponents
 ```
 
--   The correlations here (.03 \< r \< .09) are quite a bit smaller (i.e., nonexistent) than @markowitz2016 found for their sample when they constructed the abstraction index (.176 \< r \< .263). This calls into question the reliability of the abstraction index as a subcomponent of the linguistic obfuscation index in our sample, and it calls into question the validity of each of the indicators of the abstraction index (articles, prepositions, and quantity words) in our sample.
+-   The correlations here (.03 \< r \< .1) are quite a bit smaller (i.e., nonexistent) than @markowitz2016 found for their sample when they constructed the abstraction index (.176 \< r \< .263). This calls into question the reliability of the abstraction index as a subcomponent of the linguistic obfuscation index in our sample, and it calls into question the validity of each of the indicators of the abstraction index (articles, prepositions, and quantity words) in our sample.
 
 4.  Now we will produce Pearson bivariate correlations for the subcomponents of the `LingObf` index.
 
@@ -537,17 +537,17 @@ correlation_matrix_LingObf_subcomponents <- cor(data[,c("cause", "abstraction", 
 correlation_matrix_LingObf_subcomponents
 ```
 
--   If we let the Linguistic Obfuscation Index be *LFI*, causal terms be *C*, the abstraction index be *A*, jargon be *J*, positive emotion terms be *P*, and Flesch reading ease be *F*, the mathematical model for the construction of the Linguistic Obfuscation index for an observation *i* can be stated as follows:
+-   If we let the Linguistic Obfuscation Index be *O*, causal terms be *C*, the abstraction index be *A*, jargon be *J*, positive emotion terms be *P*, and Flesch reading ease be *F*, the mathematical model for the construction of the Linguistic Obfuscation index for an observation *i* can be stated as follows:
 
 $$
-LFI_i = (C_i + A_i + J_i) - (P_i + F_i)
+O_i = (C_i + A_i + J_i) - (P_i + F_i)
 $$
 
 -   If this model is internally consistent, we should expect that each of the variables within the aggregated variables (i.e., that are within parentheses with one another) should be positively correlate. We should also expect that variables will be negatively correlated across the aggregates (i.e., each of the variables that are in opposite aggregates).
 
     -   Expected Positive Correlations:
 
-        -   We should expect the relationships between causal terms, the abstraction index, and jargon words to be positive. However, the relationships all seem to be (small) negative relationships.
+        -   We should expect the relationships between causal terms, the abstraction index, and jargon words to be positive. However, the relationships are (small) negative relationships, with the exception of the relationship between abstraction and jargon, which is very slightly positive.
 
         -   We also should expect the relationship between positive emotion words and Flesch reading ease to be positive, but it is also a small, negative correlation.
 
@@ -559,13 +559,13 @@ $$
 
         -   We should expect a negative relationship between the abstraction index and positive emotion terms, but there is no relationship to speak of.
 
-        -   We also should expect a negative relationship between the abstraction index and Flesch reading ease, but there is a moderate positive correlation.
+        -   We also should expect a negative relationship between the abstraction index and Flesch reading ease, but there is no relationship to speak of (very, very slightly positive).
 
         -   As should expect, there is a small negative relationship between Jargon and positive emotion terms.
 
         -   Lastly, we should expect a negative correlation between jargon and Flesch reading ease, but there is a small, positive correlation between them.
 
-    -   The observed relationships here may be expected *a priori* in some cases (e.g., the relationship between jargon and Flesch reading ease may be expected to be a positive relationship because the longer sentences someone writes the more likely they may be to use nonstandard words, simply by volume). However, from an internal consistency perspective, most of the relationships (8/10) we have observed here are either in the wrong direction or are too small to be considered.
+    -   The observed relationships here may be expected *a priori* in some cases (e.g., the relationship between jargon and Flesch reading ease may be expected to be a positive relationship because the longer sentences someone writes the more likely they may be to use nonstandard words, simply by volume). However, from an internal consistency perspective, most of the relationships (7/10) we have observed here are either in the wrong direction or are too small to be considered.
 
         -   This warrants serious consideration for whether our findings for hypothesis A can be interpreted appropriately.
 
@@ -609,9 +609,12 @@ ggplot(data, aes(sample = LingObf)) +
   geom_qq_line()
 ```
 
--   The QQ plots are relatively close to the theoretical values, but there is some deviation at the ends of the distributions (particularly in the genuine papers group with a huge outlier). Because of this, I will run a Shapiro-Wilk test on each of the groups.
+-   The QQ plots are not that close to the theoretical values, with deviation at the ends of the distributions (particularly in the fraudulent paper group). Because of this, I will run a Shapiro-Wilk test on each of the groups.
 
 ```{r}
+# Loading the dplyr package for the pipe function
+library(dplyr)
+
 # Performing the Shapiro-Wilk test for normality within each group
 sw_results_LingObf_GorP <- data %>%
   group_by(Genuine_or_Fraudulent) %>%
@@ -622,75 +625,46 @@ sw_results_LingObf_GorP$SW_test_result[[1]]
 sw_results_LingObf_GorP$SW_test_result[[2]]
 ```
 
--   The Shapiro-Wilk tests indicate that for the Fraudulent Paper group we should accept the null hypothesis that the data are normally distributed, and for the Genuine Paper group we should reject the null hypothesis that the data are normally distributed. I am now going to try to remove the outlier (lowest value for `LingObf`) and rerun these tests to see if that takes care of the issue. I will create a new data frame (`data_no_gpaper_obf_outlier`) without the outlier so that I can preserve the original data for later analyses.
+-   The Shapiro-Wilk tests indicate that for both groups we should accept the null hypothesis that the data are normally distributed. Our assumption of normality is therefore supported.
+
+2.  We will now run Levene's test for homogeneity of variance.
 
 ```{r}
-min_value_obf <- min(data$LingObf, na.rm = TRUE)
+# To load the car package for Levene's test
+library(car)
 
-# Remove the row with the minimum LingObf value from the entire dataset
-data_no_gpaper_obf_outlier <- data %>%
-  filter(LingObf != min_value_obf)
+# Converting LingObf to numeric again, becuase there is a bug that won't allow me to run it if I don't do this
+data$LingObf <- as.numeric(data$LingObf)
+
+# To conduct Levene's test for homogeneity of variances
+hyp_1a_levene_test <- leveneTest(LingObf ~ Genuine_or_Fraudulent, data = data)
+
+# To display the Levene's test result
+hyp_1a_levene_test
 ```
 
--   Now that we have removed the lowest value for GPaper, we will produce the QQ-plots and the Shapiro-Wilk normality tests again.
-
-```{r}
-# To produce Q-Q plot for LingObf within the FPaper and GPaper groups in the new data frame
-ggplot(data_no_gpaper_obf_outlier, aes(sample = LingObf)) + 
-  stat_qq() + 
-  facet_wrap(~ Genuine_or_Fraudulent) +
-  geom_qq_line()
-
-# Performing the Shapiro-Wilks test for normality within each group in the new data frame
-sw_results_LingObf_GorP_2 <- data_no_gpaper_obf_outlier %>%
-  group_by(Genuine_or_Fraudulent) %>%
-  summarise(SW_test_result2 = list(shapiro.test(LingObf)))
-
-# Displaying the results
-sw_results_LingObf_GorP_2$SW_test_result2[[1]]
-sw_results_LingObf_GorP_2$SW_test_result2[[2]]
-```
-
--   Unfortunately, the result of the Shapiro-Wilk normality test indicates that removal of the outlier did not improve the situation. Instead, I will run the t-test with bootstrapped confidence intervals to attempt to make it robust to violations of the assumption of normality. Because bootstrapped t-tests are also robust to violations of the assumption of homogeneity of variance, we will skip this step.
+-   Results of Levene's test indicate that we should accept the null hypothesis that the variances are equal between the groups.
 
 3.  Now we will run the independent samples t-test with bootstrapped confidence intervals.
 
 ```{r}
-# Load necessary libraries
-library(boot)
+# Load effsize package for Cohen's d
 library(effsize)
 
-# Setting the seed
-set.seed(616913)
-
-# Defining the statistic function for bootstrapping
-t_stat_boot_obf <- function(data, index) {
-  resampled_data_obf <- data[index, ] # Resample the data with replacement
-  t_result <- t.test(LingObf ~ Genuine_or_Fraudulent, data=resampled_data_obf)
-  return(t_result$statistic)
-}
-
-# Performing the bootstrapping
-boot_results_obf <- boot(data = data, statistic = t_stat_boot_obf, R = 1000)
-
-# Performing the regular t-test
+# Performing the t-test
 stud_t_test_obf <- t.test(LingObf ~ Genuine_or_Fraudulent, data = data)
 
 # Calculating Cohen's d using the effsize package
 d_obf <- cohen.d(LingObf ~ Genuine_or_Fraudulent, data = data)
 
-# Calculate the 95% confidence interval from the bootstrapped results
-boot_ci_obf <- boot.ci(boot_results_obf, type = "bca")
-
-# Report the results
+# Reporting the results
 cat("Mean Difference: ", stud_t_test_obf$estimate, "\n",
-    "95% CI: ", boot_ci_obf$bca[4], boot_ci_obf$bca[5], "\n",
     "t-value: ", stud_t_test_obf$statistic, "\n",
     "p-value: ", stud_t_test_obf$p.value, "\n",
     "Cohen's d: ", d_obf$estimate, "\n")
 ```
 
--   The results of this bootstrapped t-test with 1,000 resamples does not support **Hypothesis 1a**. We should accept the null hypothesis that the means of the two groups are the same.
+-   The results of the t-test do not provide reliable evidence against the null for **Hypothesis 1a**. We should accept the null hypothesis that the means of the two groups are the same.
 
 #### **Testing Hypothesis 1b**
 
@@ -706,7 +680,7 @@ ggplot(data, aes(sample = LingObf)) +
   geom_qq_line()
 ```
 
--   I am not satisfied with the plots within PaperType groups for SAFP, MAGP, or SAGP. Therefore, we will test for non-normality using a Shapiro-Wilk test within each group.
+-   Although they don't look terrible, I am not satisfied with the plots within PaperType groups for SAFP, MAGP, or SAGP. Therefore, we will test for non-normality using a Shapiro-Wilk test within each group.
 
 ```{r}
 # Performing the Shapiro-Wilks test for normality within each group
@@ -721,31 +695,26 @@ sw_results_LingObf_PT$SW_test_result2[[3]]
 sw_results_LingObf_PT$SW_test_result2[[4]]
 ```
 
--   As I suspected, the results for the Shapiro-Wilk test for normality indicate that for the SAFP, MAGP, or SAGP we should reject the null hypothesis that the data are normally distributed. Therefore, we will run a bootstrapped ANOVA to test for differences between groups, and we will skip the test for assuming homogeneity of variances again as well.
+-   The results for the Shapiro-Wilk test for normality indicate that we should accept the null hypothesis that the data are normally distributed for each group. We will now check the assumption of homogeneity of variances.
 
-2.  We will now run the one-way ANOVA with bootstrapped confidence intervals.
+2.  Running Levene's test for homogeneity of variances for the `PaperType` groups.
 
 ```{r}
-# Setting the seed
-set.seed(616913)
+# To conduct Levene's test for homogeneity of variances
+hyp_1b_levene_test <- leveneTest(LingObf ~ PaperType, data = data)
 
-# Define the statistic function for bootstrapping ANOVA
-f_stat_boot_obf <- function(data, index) {
-  resampled_data <- data[index, ] # Resample the data with replacement
-  aov_result <- aov(LingObf ~ PaperType, data=resampled_data)
-  return(summary(aov_result)[[1]]$F[1]) # Extract the F-statistic
-}
+# To display the Levene's test result
+hyp_1b_levene_test
+```
 
-# Perform the bootstrapping
-boot_results_f_obf <- boot(data = data, statistic = f_stat_boot_obf, R = 1000)
+-   The result of Levene's test indicates that we may accept the null hypothesis that the variances are equal between the groups. Therefore, we will consider the assumption of homogeneity supported and run our one-way ANOVA.
 
-# Perform and print the original ANOVA to get the original F-statistic and p-value
-original_aov_obf <- aov(LingObf ~ PaperType, data=data)
-summary(original_aov_obf)
+2.  We will now run the one-way ANOVA.
 
-# Calculate and report the bootstrapped confidence interval for the F-statistic
-boot_f_ci_obf <- boot.ci(boot_results_f_obf, type="bca")
-cat("Bootstrapped 95% Confidence Interval for F-statistic: ", boot_f_ci_obf$bca[4], " to ", boot_f_ci_obf$bca[5], "\n")
+```{r}
+# Perform and print the ANOVA
+aov_obf <- aov(LingObf ~ PaperType, data=data)
+summary(aov_obf)
 ```
 
 -   The results of this bootstrapped one-way ANOVA indicate that we should accept the null hypothesis that there are no differences between the `PaperType` groups on the `LingObf` variable. No post-hoc test needs to be conducted.
@@ -1032,6 +1001,9 @@ sw_results_RefWordRatio_GorP$SW_test_result6[[2]]
 3.  Conducting the bootstrapped t-test.
 
 ```{r}
+# Loading the boot package for bootstrapping
+library(boot)
+
 # Setting the seed
 set.seed(616913)
 

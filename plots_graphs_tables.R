@@ -19,6 +19,7 @@ apa.cor.table(data[c("LingObf", "CertSent", "Refs")],
 apa.cor.table(data[,c("article", "prep", "quantity")],
               filename = "abs_subcomponents_corr_table.doc",
               table.number = 2)
+
   # For subcomponents of obfuscation
 apa.cor.table(data[,c("cause", "abstraction", "jargon", "emo_pos", "flesch_re")],
               filename = "obf_subcomponents_corr_table.doc",
@@ -39,8 +40,6 @@ library(psych)
 # without the outlier for LingObf so that we can plot that as well)
 groups_pt <- group_by(data, PaperType)
 groups_fg <- group_by(data, Genuine_or_Fraudulent)
-groups_pt_no_outlier <- group_by(data_no_gpaper_obf_outlier, PaperType)
-groups_fg_no_outlier <- group_by(data_no_gpaper_obf_outlier, Genuine_or_Fraudulent)
 
 # Calculating 95% confidence intervals for the groups on each outcome variable
 CIs_groups_pt_ref <- summarise(groups_pt,
@@ -66,15 +65,6 @@ CIs_groups_pt_obf <- summarise(groups_pt,
                                ymin = min(LingObf),
                                ymax = max(LingObf))
 
-CIs_groups_pt_obf_no_outlier <- summarise(groups_pt_no_outlier,
-                               mean = mean(LingObf, na.rm = TRUE),
-                               sd = sd(LingObf, na.rm = TRUE),
-                               n = n(),
-                               CI_upper = mean + 1.96*sd/sqrt(n),
-                               CI_lower = mean - 1.96*sd/sqrt(n),
-                               ymin = min(LingObf),
-                               ymax = max(LingObf))
-
 CIs_groups_fg_obf <- summarise(groups_fg,
                                mean = mean(LingObf, na.rm = TRUE),
                                sd = sd(LingObf, na.rm = TRUE),
@@ -83,15 +73,6 @@ CIs_groups_fg_obf <- summarise(groups_fg,
                                CI_lower = mean - 1.96*sd/sqrt(n),
                                ymin = min(LingObf),
                                ymax = max(LingObf))
-
-CIs_groups_fg_obf_no_outlier <- summarise(groups_fg_no_outlier,
-                                          mean = mean(LingObf, na.rm = TRUE),
-                                          sd = sd(LingObf, na.rm = TRUE),
-                                          n = n(),
-                                          CI_upper = mean + 1.96*sd/sqrt(n),
-                                          CI_lower = mean - 1.96*sd/sqrt(n),
-                                          ymin = min(LingObf),
-                                          ymax = max(LingObf))
 
 CIs_groups_pt_cert <- summarise(groups_pt,
                                mean = mean(CertSent, na.rm = TRUE),
@@ -162,42 +143,12 @@ CIs_groups_pt_obf %>%
   scale_y_continuous(breaks = seq(-1.25, 1.25, 0.25),
                      expand = c(0,0),
                      limits = c(-1.25, 1.25))
-  # Stats Without outlier within PaperType groups
-CIs_groups_pt_obf_no_outlier
-  # Plot without outlier witin PaperType groups (with 95% confidence intervals)
-CIs_groups_pt_obf_no_outlier %>%
-  ggplot(aes(x = factor(PaperType), y = mean)) +
-  geom_point(shape = 21, fill = "grey", size = 3) + 
-  geom_errorbar(aes(ymin = CI_lower, ymax = CI_upper), width = 0.2, color = "black") +
-  xlab('Paper Type') +
-  ylab('Linguistic Obfuscation') +
-  theme_apa() +
-  theme(axis.title.y = element_text(face = "bold"),
-        axis.title.x = element_text(face = "bold")) +
-  scale_y_continuous(breaks = seq(-1.25, 1.25, 0.25),
-                     expand = c(0,0),
-                     limits = c(-1.25, 1.25))
 
 # Plot for means of LingObf within G or F groups (with 95% confidence intervals)
   # Statistics to see what the scales need to be
 CIs_groups_fg_obf
   # Plot for means of LingObf within F or G group
 CIs_groups_fg_obf %>%
-  ggplot(aes(x = factor(Genuine_or_Fraudulent), y = mean)) +
-  geom_point(shape = 21, fill = "grey", size = 3) + 
-  geom_errorbar(aes(ymin = CI_lower, ymax = CI_upper), width = 0.2, color = "black") +
-  xlab('Paper Type') +
-  ylab('Linguistic Obfuscation') +
-  theme_apa() +
-  theme(axis.title.y = element_text(face = "bold"),
-        axis.title.x = element_text(face = "bold")) +
-  scale_y_continuous(breaks = seq(-1.25, 1.25, 0.25),
-                     expand = c(0,0),
-                     limits = c(-1.25, 1.25))
-  # Stats without outlier
-CIs_groups_fg_obf_no_outlier
-  # Plot without outlier within 
-CIs_groups_fg_obf_no_outlier %>%
   ggplot(aes(x = factor(Genuine_or_Fraudulent), y = mean)) +
   geom_point(shape = 21, fill = "grey", size = 3) + 
   geom_errorbar(aes(ymin = CI_lower, ymax = CI_upper), width = 0.2, color = "black") +

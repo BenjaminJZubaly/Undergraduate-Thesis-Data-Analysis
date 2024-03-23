@@ -31,3 +31,8 @@ power.prop.test(p1 = .5,
                 sig.level = 0.05,
                 alternative = "two.sided")
 
+# For follow up analysis comparing author number groups on obfuscation
+pwr.t.test(d = -.37, n = 44, 
+           sig.level = .05, 
+           type = "two.sample", 
+           alternative = "two.sided")

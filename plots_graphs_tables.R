@@ -40,6 +40,7 @@ library(psych)
 # without the outlier for LingObf so that we can plot that as well)
 groups_pt <- group_by(data, PaperType)
 groups_fg <- group_by(data, Genuine_or_Fraudulent)
+groups_sm <- group_by(data, S_or_M)
 
 # Calculating 95% confidence intervals for the groups on each outcome variable
 CIs_groups_pt_ref <- summarise(groups_pt,
@@ -91,6 +92,13 @@ CIs_groups_fg_cert <- summarise(groups_fg,
                                 CI_lower = mean - 1.96*sd/sqrt(n),
                                 ymin = min(CertSent),
                                 ymax = max(CertSent))
+
+CIs_groups_sm_obf <- summarise(groups_sm,
+                               mean = mean(LingObf, na.rm = TRUE),
+                               sd = sd(LingObf, na.rm = TRUE),
+                               n = n(),
+                               CI_upper = mean + 1.96*sd/sqrt(n),
+                               CI_lower = mean - 1.96*sd/sqrt(n))
 
 
 # Plots for References ---------------------------------------------------------
@@ -193,4 +201,21 @@ CIs_groups_fg_cert %>%
         axis.title.x = element_text(face = "bold")) +
   scale_y_continuous(breaks = seq(5.9, 6.4, .1),
                      expand = c(0,0),
-                     limits = c(5.9, 6.4))     
+                     limits = c(5.9, 6.4))
+
+# Plot for follow up analysis of single- and multi-author groups on obfuscation
+  # Statistics
+CIs_groups_sm_obf
+  # Plotting the means
+CIs_groups_sm_obf %>%
+  ggplot(aes(x = factor(S_or_M), y = mean)) +
+  geom_point(shape = 21, fill = "grey", size = 3) + 
+  geom_errorbar(aes(ymin = CI_lower, ymax = CI_upper), width = 0.2, color = "black") +
+  xlab('Author Number Group') +
+  ylab('Linguistic Obfuscation') +
+  theme_apa() +
+  theme(axis.title.y = element_text(face = "bold"),
+        axis.title.x = element_text(face = "bold")) +
+  scale_y_continuous(breaks = seq(-1.25, 1.25, 0.25),
+                     expand = c(0,0),
+                     limits = c(-1.25, 1.25))

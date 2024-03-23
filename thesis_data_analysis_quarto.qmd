@@ -1105,6 +1105,72 @@ cat("Bootstrapped 95% Confidence Interval for F-statistic: ", boot_f_ci_RefWCRat
 
 -   The results of the ANOVA and the fact that the observed F-statistic is within the bootstrapped confidence interval suggest that we should accept the null hypothesis that there is no difference between the means of the `PaperType` groups on the ratio of `Refs` to `WC`.
 
+## Retesting for a Main Effect of Author Number on Linguistic Obfuscation
+
+Hypothesis 2a looks for differences between paper groups on linguistic obfuscation, but it looks like there may be a main effect of author number. I want to look at a comparison between multi-author paper groups and single-author paper groups to see if this is the case.
+
+```{r}
+# Creating a new variable that isolates multi-author and single-author papers
+data$S_or_M <- ifelse(data$PaperType %in% c("MAFP", "MAGP"), "MPaper", "SPaper")
+
+# Making the new variable a factor with labels denoting what they represent
+data$S_or_M <- factor(data$S_or_M, levels = c("SPaper", "MPaper"), labels = c("Single-Author Papers", "Multi-Author Papers"))
+```
+
+Now I will check assumptions for a t-test to compare these groups on linguistic obfuscation.
+
+1.  Checking the assumption of normality with a QQ-plot:
+
+```{r}
+# To produce Q-Q plots for LingObf within the SPaper and MPaper groups
+ggplot(data, aes(sample = LingObf)) + 
+  stat_qq() + 
+  facet_wrap(~ S_or_M) +
+  geom_qq_line()
+```
+
+-   The single-author papers look like there are some outliers on the top end of the distribution. So I will do a Shapiro-Wilk test for normality.
+
+```{r}
+# Performing the Shapiro-Wilk test for normality within each group
+sw_results_LingObf_SorM <- data %>%
+  group_by(S_or_M) %>%
+  summarise(SW_test_resultf = list(shapiro.test(LingObf)))
+
+# Displaying the results
+sw_results_LingObf_SorM$SW_test_resultf[[1]]
+sw_results_LingObf_SorM$SW_test_resultf[[2]]
+```
+
+-   The results of the Shapiro-Wilk test indicates that we should accept the null hypothesis that the data are normally distributed.
+
+2.  Now we will test for the assumption of homogeneity of variance with Levene's test.
+
+```{r}
+# Conducting and saving levene's test
+follow_up_SorM_levene <- leveneTest(LingObf ~ S_or_M, data = data)
+
+# Displaying the results
+follow_up_SorM_levene
+```
+
+-   Results of Levene's test indicate that the variances are not equal between the groups, so we should reject the assumption of homogeneity of variance and proceed to using a Welch's t-test.
+
+```{r}
+# Conducting Welch's t-test and saving result
+follow_up_SorM_welch <- t.test(LingObf ~ S_or_M, data = data, var.equal = FALSE)
+
+# Calculating the effect size for the difference
+cohen.d(LingObf ~ S_or_M, data = data, var.equal = FALSE)
+
+# Displaying the result
+follow_up_SorM_welch
+```
+
+-   The results of the t-test indicate that we should accept the null hypothesis that the groups are different, but the result is closer to significance than the results for Hypothesis 1a. Similarly, the effect size is larger than for Hypothesis 1a, indicating that if there is a main effect of author number it is larger than for the fraudulent group vs. the genuine group.
+
+    -   This is an interesting result, and it indicates that previous work might be confounded by author number.
+
 # Saving Data
 
 ```{r}

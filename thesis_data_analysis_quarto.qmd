@@ -1,7 +1,8 @@
 ---
 title: "Thesis Data Analysis: The Psychology of Scientific Fraud"
 author: "Benjamin Zubaly"
-date: March 4, 2024
+date: March 22, 2024
+theme: lux
 format:
   html:
     self-contained: true

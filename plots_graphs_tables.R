@@ -148,9 +148,9 @@ CIs_groups_pt_obf %>%
   theme_apa() +
   theme(axis.title.y = element_text(face = "bold"),
         axis.title.x = element_text(face = "bold")) +
-  scale_y_continuous(breaks = seq(-2, 2, 0.5),
+  scale_y_continuous(breaks = seq(-2, 1.5, 0.5),
                      expand = c(0,0),
-                     limits = c(-2, 2))
+                     limits = c(-2, 1.5))
 
 # Plot for means of LingObf within G or F groups (with 95% confidence intervals)
   # Statistics to see what the scales need to be

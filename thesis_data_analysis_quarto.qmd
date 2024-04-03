@@ -2,7 +2,7 @@
 title: "Thesis Data Analysis: The Psychology of Scientific Fraud"
 author: "Benjamin Zubaly"
 date: March 22, 2024
-theme: lux
+theme: default
 format:
   html:
     self-contained: true
@@ -23,7 +23,35 @@ options(repos = list(CRAN = "https://cloud.r-project.org/"))
 
 # Introduction
 
-This document is intended to track the data analysis for my undergraduate thesis project on the psychology of scientific fraud. I have already planned out (and [preregistered](https://osf.io/vmq48/?view_only=5d55e73ffc7948748e5a7049c6e52161 "OSF Preregistration Link")) my data analysis plan (see [here](https://benjaminjzubaly.github.io/The-Psychology-of-Scientific-Fraud-Thesis/#data-analysis "Thesis Data Analysis Plan")), and I will note throughout the document if I deviate from this plan and why. This project is also being tracked in a private GitHub repository in case I need to revert back to a previous version of the project due to a fatal error.
+This document is intended to track the data analysis for my undergraduate thesis project on the psychology of scientific fraud. I have already planned out (and [preregistered](https://osf.io/vmq48/?view_only=5d55e73ffc7948748e5a7049c6e52161 "OSF Preregistration Link")) my data analysis plan (see [here](https://benjaminjzubaly.github.io/The-Psychology-of-Scientific-Fraud-Thesis/#data-analysis "Thesis Data Analysis Plan")), and I will note throughout the document if I deviate from this plan and why. This project is also being tracked in a private GitHub repository in case I need to revert back to a previous version of the project due to a fatal error. For reproducibility, the session info is displayed here:
+
+R version 4.3.2 (2023-10-31)
+
+Platform: x86_64-apple-darwin20 (64-bit)
+
+Running under: macOS Sonoma 14.4.1
+
+Matrix products: default
+
+BLAS: /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib
+
+LAPACK: /Library/Frameworks/R.framework/Versions/4.3-x86_64/Resources/lib/libRlapack.dylib;
+
+LAPACK version 3.11.0
+
+locale:
+
+\[1\] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: America/Los_Angeles
+
+tzcode source: internal
+
+attached base packages:\[1\] stats graphics grDevices utils datasets methods base
+
+other attached packages:\[1\] boot_1.3-30 effsize_0.8.1 car_3.1-2 carData_3.0-5 ggplot2_3.5.0 psych_2.4.3 \[7\] dplyr_1.1.4 readr_2.1.5 sessioninfo_1.2.2
+
+loaded via a namespace (and not attached): \[1\] bit_4.0.5 gtable_0.3.4 compiler_4.3.2 crayon_1.5.2 tidyselect_1.2.0 \[6\] parallel_4.3.2 scales_1.3.0 lattice_0.21-9 R6_2.5.1 labeling_0.4.3 \[11\] generics_0.1.3 knitr_1.45 tibble_3.2.1 munsell_0.5.0 pillar_1.9.0 \[16\] tzdb_0.4.0 rlang_1.1.2 utf8_1.2.4 xfun_0.41 bit64_4.0.5 \[21\] pkgload_1.3.3 cli_3.6.1 withr_2.5.2 magrittr_2.0.3 grid_4.3.2 \[26\] vroom_1.6.4 rstudioapi_0.15.0 hms_1.1.3 lifecycle_1.0.4 nlme_3.1-163 \[31\] vctrs_0.6.4 mnormt_2.1.1 glue_1.6.2 farver_2.1.1 abind_1.4-5 \[36\] fansi_1.0.5 colorspace_2.1-0 tools_4.3.2 pkgconfig_2.0.3
 
 ## Overview of Sections
 
@@ -87,6 +115,7 @@ install.packages("effsize")     # For calculating effect sizes
 install.packages("rcompanion")  # For Games-Howell post-hoc test (if applicable)
 install.packages("dunn.test")   # For Dunn post-hoc test (if applicable)
 install.packages("boot")        # For bootstrapped hypothesis tests (if applicable)
+install.packages("sessioninfo") # For session info at end of document
 ```
 
 ## Initial Import of Data
@@ -1176,4 +1205,11 @@ follow_up_SorM_welch
 
 ```{r}
 write.csv(data, "post_followup_analyses_study_dataset.csv")
+```
+
+# Session Info
+
+```{r}
+library(sessioninfo)
+sessionInfo()
 ```

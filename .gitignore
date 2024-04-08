@@ -50,3 +50,31 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+# plots and tables						
+hyp_2_b_means_plot.png
+hyp_3_a_means_plot.png
+hyp_3_b_means_plot.png
+num_outcomes_corr_table.doc
+obf_subcomponents_corr_table.doc
+abs_subcomponents_corr_table.doc
+
+# Datasets
+post_analysis_study_dataset.csv
+post_followup_analyses_study_dataset.csv
+clean_study_data.csv
+
+# References
+references.yaml
+apa.csl
+
+# R project file
+thesis_data_analysis.Rproj
+
+# More plots and graphs
+follow_up_sm_means_plot.png
+hyp_1_a_means_plot.png
+hyp_1_b_means_plot.png
+hyp_1b_resized.png
+hyp_2_a_means_plot.png
+
